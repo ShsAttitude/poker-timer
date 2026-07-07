@@ -414,7 +414,7 @@
             background: linear-gradient(135deg, #8b2222, #aa3333);
             border-color: #cc4444;
             color: #fff;
-            font-size: 1.15rem;
+            font-size: 1rem;
             flex: 1.5;
             box-shadow: 0 8px 30px rgba(139, 34, 34, 0.4);
         }
@@ -1041,14 +1041,8 @@
             </div>
             <div class="settings-block">
                 <h3>预设方案</h3>
-                <div class="settings-actions" style="margin-top:0">
-                    <button class="btn-preset" data-preset="standard">标准</button>
-                    <button class="btn-preset" data-preset="turbo">快速</button>
-                    <button class="btn-preset" data-preset="deep">深筹</button>
-                    <button class="btn-preset" data-preset="sitngo">SNG 9人</button>
-                    <button class="btn-preset" id="btnSaveAsPreset" style="border-style:dashed;">+ 新建规则</button>
-                </div>
-                <div id="customPresets" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+                <div class="settings-actions" style="margin-top:0;flex-wrap:wrap;" id="presetsContainer"></div>
+                <button class="btn-preset" id="btnSaveAsPreset" style="border-style:dashed;margin-top:8px;">+ 新建规则</button>
             </div>
             <div class="settings-block">
                 <h3>盲注结构</h3>
@@ -1650,7 +1644,8 @@
         }
 
         function applyPreset(name) {
-            const preset = PRESETS[name];
+            const presets = loadAllPresets();
+            const preset = presets[name];
             if (!preset) return;
             state.levels = preset.levels.map(l => ({ smallBlind: l.sb, bigBlind: l.bb, ante: l.ante,
                 durationMinutes: l.dur, isBreak: l.brk }));
@@ -1660,86 +1655,102 @@
             clearInterval(timerInterval);
             timerInterval = null;
             renderLevelEditor();
-            showToast('LOADED: ' + preset.name);
+            showToast('LOADED: ' + name);
         }
 
-        // --- Custom presets ---
-        const CUSTOM_PRESETS_KEY = 'poker_custom_presets';
+        // --- Unified presets (built-in + custom) ---
+        const ALL_PRESETS_KEY = 'poker_all_presets_v1';
 
-        function loadCustomPresets() {
+        function loadAllPresets() {
             try {
-                const raw = localStorage.getItem(CUSTOM_PRESETS_KEY);
-                return raw ? JSON.parse(raw) : {};
-            } catch (e) { return {}; }
+                const raw = localStorage.getItem(ALL_PRESETS_KEY);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {}
+            // First time: seed from built-in PRESETS
+            const seeded = {};
+            Object.keys(PRESETS).forEach(k => {
+                seeded[PRESETS[k].name] = PRESETS[k];
+            });
+            saveAllPresets(seeded);
+            return seeded;
         }
 
-        function saveCustomPresets(presets) {
+        function saveAllPresets(presets) {
             try {
-                localStorage.setItem(CUSTOM_PRESETS_KEY, JSON.stringify(presets));
+                localStorage.setItem(ALL_PRESETS_KEY, JSON.stringify(presets));
             } catch (e) { showToast('⚠ SAVE FAILED'); }
         }
 
-        function renderCustomPresets() {
-            const container = document.getElementById('customPresets');
+        function renderAllPresets() {
+            const container = document.getElementById('presetsContainer');
             if (!container) return;
             container.innerHTML = '';
-            const presets = loadCustomPresets();
+            const presets = loadAllPresets();
             Object.keys(presets).forEach(name => {
+                const preset = presets[name];
                 const wrapper = document.createElement('span');
-                wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:2px;';
+                wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:2px;margin-right:4px;';
                 const btn = document.createElement('button');
                 btn.className = 'btn-preset';
                 btn.textContent = name;
-                btn.addEventListener('click', () => {
-                    state.levels = presets[name].map(l => ({
-                        smallBlind: l.sb, bigBlind: l.bb, ante: l.ante,
-                        durationMinutes: l.dur, isBreak: l.brk
-                    }));
-                    state.currentLevelIndex = 0;
-                    state.remainingSeconds = state.levels[0].durationMinutes * 60;
-                    state.isRunning = false;
-                    clearInterval(timerInterval);
-                    timerInterval = null;
-                    renderLevelEditor();
-                    showToast('LOADED: ' + name);
+                btn.addEventListener('click', () => applyPreset(name));
+                const renameBtn = document.createElement('button');
+                renameBtn.textContent = '✎';
+                renameBtn.title = 'Rename';
+                renameBtn.style.cssText = 'background:transparent;border:none;color:var(--cream-dim);cursor:pointer;font-size:0.8rem;padding:0 2px;';
+                renameBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const newName = prompt('Rename "' + name + '":', name);
+                    if (!newName || !newName.trim() || newName.trim() === name) return;
+                    const trimmed = newName.trim();
+                    const all = loadAllPresets();
+                    if (all[trimmed]) { alert('Name already exists'); return; }
+                    all[trimmed] = all[name];
+                    all[trimmed].name = trimmed;
+                    delete all[name];
+                    saveAllPresets(all);
+                    renderAllPresets();
                 });
                 const delBtn = document.createElement('button');
                 delBtn.textContent = '×';
-                delBtn.style.cssText = 'background:transparent;border:none;color:#ff5555;cursor:pointer;font-size:1.1rem;padding:0 4px;line-height:1;';
-                delBtn.title = 'Delete ' + name;
+                delBtn.title = 'Delete';
+                delBtn.style.cssText = 'background:transparent;border:none;color:#ff5555;cursor:pointer;font-size:1rem;padding:0 3px;line-height:1;';
                 delBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if (confirm('Delete preset "' + name + '"?')) {
-                        delete presets[name];
-                        saveCustomPresets(presets);
-                        renderCustomPresets();
-                        showToast('DELETED: ' + name);
-                    }
+                    if (!confirm('Delete preset "' + name + '"?')) return;
+                    const all = loadAllPresets();
+                    delete all[name];
+                    saveAllPresets(all);
+                    renderAllPresets();
+                    showToast('DELETED: ' + name);
                 });
                 wrapper.appendChild(btn);
+                wrapper.appendChild(renameBtn);
                 wrapper.appendChild(delBtn);
                 container.appendChild(wrapper);
             });
         }
 
         function saveCurrentAsPreset() {
-            const name = prompt('请输入新规则名称：');
+            const name = prompt('New preset name:');
             if (!name || !name.trim()) return;
             const trimmedName = name.trim();
-            const presets = loadCustomPresets();
-            if (presets[trimmedName] && !confirm('规则 "' + trimmedName + '" 已存在，是否覆盖？')) return;
-            presets[trimmedName] = state.levels.map(l => ({
-                sb: l.smallBlind, bb: l.bigBlind, ante: l.ante, dur: l.durationMinutes, brk: l.isBreak
-            }));
-            saveCustomPresets(presets);
-            renderCustomPresets();
+            const presets = loadAllPresets();
+            if (presets[trimmedName] && !confirm('"' + trimmedName + '" already exists. Overwrite?')) return;
+            presets[trimmedName] = {
+                name: trimmedName,
+                levels: state.levels.map(l => ({
+                    sb: l.smallBlind, bb: l.bigBlind, ante: l.ante, dur: l.durationMinutes, brk: l.isBreak
+                }))
+            };
+            saveAllPresets(presets);
+            renderAllPresets();
             showToast('SAVED: ' + trimmedName);
         }
 
-        // Wire up custom preset UI
+        // Wire up unified preset UI
         document.getElementById('btnSaveAsPreset').addEventListener('click', saveCurrentAsPreset);
-        // Load custom presets on init
-        renderCustomPresets();
+        renderAllPresets();
 
         function handlePlayerCountChange(val) {
             state.playerCount = Math.max(2, parseInt(val) || 2);
