@@ -1,1538 +1,1861 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#060d06">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Blind Timer">
-<meta name="description" content="Professional Poker Tournament Blind Timer · 专业扑克锦标赛盲注计时器">
-<title>Poker Blind Timer</title>
-<link rel="manifest" href="manifest.json">
-<style>
-/* ═══════════════════════════════════════════
-   LUXURY CASINO DESIGN SYSTEM
-   ═══════════════════════════════════════════ */
-:root {
-  --felt-deep: #060d06;
-  --felt: #0a160a;
-  --felt-light: #0e1e0e;
-  --gold: #c9a94e;
-  --gold-light: #e0c878;
-  --gold-pale: #f0deb0;
-  --gold-dark: #8b6f2e;
-  --gold-dim: #5a4a2a;
-  --emerald: #1a6b3c;
-  --emerald-bright: #2d9a54;
-  --card-bg: rgba(10, 22, 10, 0.65);
-  --glass-border: rgba(201, 169, 78, 0.18);
-  --glass-border-strong: rgba(201, 169, 78, 0.35);
-  --cream: #f0e6d3;
-  --cream-dim: #b8ad98;
-  --cream-muted: #7a7265;
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Cascadia Code', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-  --font-display: Georgia, 'Times New Roman', serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#060d06">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Blind Timer">
+    <meta name="description" content="Professional Poker Tournament Blind Timer · 专业扑克锦标赛盲注计时器">
+    <title>Poker Blind Timer</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --felt-deep: #050a05;
+            --felt: #081208;
+            --felt-light: #0a180a;
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-pale: #f9f6e6;
+            --gold-dark: #aa8529;
+            --gold-dim: #6b531c;
+            --emerald: #15582f;
+            --emerald-bright: #228b45;
+            --card-bg: rgba(12, 20, 12, 0.55);
+            --glass-border: rgba(212, 175, 55, 0.15);
+            --cream: #f4ecd8;
+            --cream-dim: #c5bca8;
+            --cream-muted: #8a8270;
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Cascadia Code', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            --font-display: Georgia, 'Times New Roman', serif;
+            --side-col-width: 290px;
+        }
 
-/* ── Felt Background ── */
-*::before, *::after { box-sizing: border-box; }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: var(--font);
-  background-color: var(--felt-deep);
-  background-image:
-    radial-gradient(ellipse at 50% 0%, rgba(20, 55, 20, 0.35) 0%, transparent 70%),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.04) 2px,
-      rgba(0, 0, 0, 0.04) 4px
-    ),
-    radial-gradient(ellipse at 80% 20%, rgba(201, 169, 78, 0.04) 0%, transparent 50%);
-  color: var(--cream);
-  min-height: 100%;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  -webkit-font-smoothing: antialiased;
-  overscroll-behavior: none;
-}
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            height: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: var(--font);
+            background-color: var(--felt-deep);
+            background-image:
+                radial-gradient(ellipse at 50% 20%, rgba(34, 139, 69, 0.15) 0%, transparent 70%),
+                radial-gradient(ellipse at 50% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
+            color: var(--cream);
+            min-height: 100%;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            overscroll-behavior: none;
+        }
 
-/* ── Header ── */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  border-bottom: 1px solid rgba(201, 169, 78, 0.12);
-  background: rgba(8, 16, 8, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header-brand { display: flex; align-items: center; gap: 10px; }
-.header-logo {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
-  box-shadow: 0 0 16px rgba(201, 169, 78, 0.3);
-}
-.header-title {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--gold);
-}
-.header-actions { display: flex; gap: 8px; }
-.icon-btn {
-  width: 38px; height: 38px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(201, 169, 78, 0.2);
-  background: rgba(20, 40, 20, 0.4);
-  backdrop-filter: blur(8px);
-  color: var(--cream-dim);
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.25s ease;
-}
-.icon-btn:hover { background: rgba(201, 169, 78, 0.12); border-color: var(--gold-dim); color: var(--gold-light); }
-.icon-btn:active { transform: scale(0.94); }
-.icon-btn.active { background: rgba(201, 169, 78, 0.18); border-color: var(--gold); color: var(--gold); }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 24px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+            background: linear-gradient(180deg, rgba(5, 10, 5, 0.9) 0%, rgba(5, 10, 5, 0) 100%);
+            position: relative;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #000;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+        }
+        .header-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: rgba(20, 30, 20, 0.3);
+            backdrop-filter: blur(10px);
+            color: var(--cream-dim);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        .icon-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold);
+            color: var(--gold-light);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        .icon-btn:active {
+            transform: scale(0.92);
+        }
 
-/* ── Main ── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 16px 24px;
-  gap: 18px;
-  max-width: 1060px;
-  width: 100%;
-  margin: 0 auto;
-}
+        .main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: var(--side-col-width) 1fr var(--side-col-width);
+            grid-template-rows: 1fr;
+            grid-template-areas: "left center right";
+            gap: 0;
+            padding: 12px 20px;
+            max-width: 1500px;
+            width: 100%;
+            margin: 0 auto;
+            align-items: stretch;
+            min-height: 0;
+        }
 
-/* ── Timer Hero ── */
-.timer-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  position: relative;
-}
-.timer-stage {
-  position: relative;
-  width: min(300px, 72vw);
-  height: min(300px, 72vw);
-}
+        .side-left {
+            grid-area: left;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 8px;
+            z-index: 2;
+            min-width: 0;
+        }
+        .side-left-img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        .side-left-placeholder {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border: 1px dashed var(--glass-border);
+            border-radius: var(--radius-lg);
+            color: var(--cream-muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: center;
+            opacity: 0.6;
+        }
+        .side-right {
+            grid-area: right;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
+            gap: 16px;
+            padding: 10px 8px;
+            z-index: 2;
+        }
+        .center-col {
+            grid-area: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 8px 16px;
+            min-width: 0;
+            z-index: 1;
+        }
 
-/* ── SVG Ring ── */
-.timer-ring { transform: rotate(-90deg); width: 100%; height: 100%; }
-.timer-ring-bg { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 6; }
-.timer-ring-fill {
-  fill: none;
-  stroke: url(#ringGradient);
-  stroke-width: 6;
-  stroke-linecap: round;
-  filter: drop-shadow(0 0 10px rgba(201, 169, 78, 0.35));
-  transition: stroke-dashoffset 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.timer-ring-fill.break { stroke: url(#ringGradientBreak); filter: drop-shadow(0 0 8px rgba(180, 140, 80, 0.3)); }
-.timer-ring-fill.paused { stroke: rgba(120, 110, 90, 0.5); filter: none; }
-.timer-ring-fill.finished { stroke: rgba(201, 169, 78, 0.25); filter: none; }
+        .side-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .side-card.highlight {
+            border-color: rgba(212, 175, 55, 0.45);
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.1), rgba(12, 20, 12, 0.55));
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.12), 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        .side-card .stat-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--cream-muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .side-card .stat-value {
+            font-family: var(--font-mono);
+            font-size: 2.6rem;
+            font-weight: 300;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            word-break: break-all;
+        }
+        .side-card .stat-value.gold {
+            color: var(--gold-light);
+            font-size: 2.8rem;
+            font-weight: 400;
+        }
+        .side-card .stat-value.next-blinds {
+            font-size: 2.6rem;
+            line-height: 1.2;
+            letter-spacing: 0.03em;
+        }
+        .side-card .stat-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 2.4rem;
+            font-weight: 300;
+            text-align: center;
+            width: 100%;
+            outline: none;
+            transition: border 0.3s;
+            padding: 4px 0;
+        }
+        .side-card .stat-input:focus {
+            border-color: var(--gold);
+        }
+        .side-card .stat-input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .side-card .stat-input[type="number"]::-webkit-inner-spin-button,
+        .side-card .stat-input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0;
+            display: none;
+        }
 
-.timer-face {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-}
-.timer-time {
-  font-family: var(--font-mono);
-  font-size: clamp(3rem, 8.5vw, 4.8rem);
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  color: #fff;
-  line-height: 1;
-  text-shadow: 0 0 40px rgba(201, 169, 78, 0.2);
-}
-.timer-time.warning {
-  color: #e8c8a0;
-  animation: timePulse 0.8s ease-in-out infinite;
-  text-shadow: 0 0 50px rgba(200, 160, 100, 0.4);
-}
-@keyframes timePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-.timer-sub {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--cream-muted);
-  font-weight: 500;
-}
+        .level-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 30px;
+            border-radius: 30px;
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            background: rgba(212, 175, 55, 0.05);
+            color: var(--gold-light);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+        }
+        .level-chip.break {
+            border-color: rgba(180, 140, 80, 0.4);
+            color: var(--gold-pale);
+        }
 
-/* ── Level Chip ── */
-.level-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 16px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  border: 1px solid rgba(201, 169, 78, 0.3);
-  background: rgba(201, 169, 78, 0.08);
-  color: var(--gold);
-  backdrop-filter: blur(8px);
-}
-.level-chip.break {
-  border-color: rgba(180, 140, 80, 0.3);
-  background: rgba(160, 120, 60, 0.08);
-  color: var(--gold-pale);
-}
+        .timer-display-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 2px 0;
+        }
+        .timer-time {
+            font-family: var(--font-mono);
+            font-size: clamp(7rem, 18vw, 14rem);
+            font-weight: 200;
+            letter-spacing: 0.02em;
+            color: #ffffff;
+            line-height: 0.85;
+            text-shadow: 0 0 80px rgba(212, 175, 55, 0.25), 0 0 20px rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .timer-time.warning {
+            color: #ff5555;
+            text-shadow: 0 0 80px rgba(255, 85, 85, 0.4);
+            animation: timePulse 1s ease-in-out infinite;
+        }
+        @keyframes timePulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
 
-/* ── Controls ── */
-.controls {
-  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center;
-}
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 10px 20px; border-radius: var(--radius-lg);
-  font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em;
-  border: 1px solid transparent; cursor: pointer;
-  transition: all 0.25s ease; white-space: nowrap;
-}
-.btn:active { transform: scale(0.96); }
-.btn-play {
-  background: linear-gradient(135deg, #1a5632, #1a6b3c);
-  border-color: rgba(45, 154, 84, 0.5);
-  color: #fff;
-  min-width: 110px; justify-content: center;
-  font-size: 1rem; padding: 13px 30px;
-  box-shadow: 0 4px 20px rgba(26, 107, 60, 0.3);
-}
-.btn-play:hover { background: linear-gradient(135deg, #1f6b3f, #2d9a54); box-shadow: 0 4px 28px rgba(26, 107, 60, 0.45); }
-.btn-play.paused-state {
-  background: rgba(30, 50, 30, 0.5);
-  border-color: rgba(201, 169, 78, 0.25);
-  color: var(--cream-dim);
-  box-shadow: none;
-}
-.btn-play:disabled { opacity: 0.5; cursor: default; }
-.btn-ghost {
-  background: transparent; border-color: rgba(201, 169, 78, 0.2);
-  color: var(--cream-dim);
-}
-.btn-ghost:hover { background: rgba(201, 169, 78, 0.06); border-color: rgba(201, 169, 78, 0.4); color: var(--cream); }
-.btn-gold {
-  background: linear-gradient(135deg, rgba(201,169,78,0.15), rgba(180,140,60,0.1));
-  border-color: rgba(201, 169, 78, 0.35);
-  color: var(--gold);
-  font-weight: 600;
-}
-.btn-gold:hover { background: rgba(201, 169, 78, 0.2); border-color: var(--gold); color: var(--gold-light); }
-.btn-sm { padding: 6px 14px; font-size: 0.78rem; border-radius: var(--radius-sm); }
+        .timer-cur-blinds {
+            display: flex;
+            align-items: baseline;
+            gap: 18px;
+            font-family: var(--font-mono);
+            margin-top: 10px;
+        }
+        .tcur-sb,
+        .tcur-bb {
+            font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+            font-weight: 300;
+            color: var(--gold);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+        .tcur-div {
+            font-size: clamp(2rem, 5vw, 4.5rem);
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 200;
+        }
+        .timer-cur-ante {
+            font-size: clamp(1.5rem, 3vw, 2.4rem);
+            color: var(--gold-dim);
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .timer-next-level {
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            color: var(--gold-light);
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            margin-top: 2px;
+            opacity: 0.85;
+        }
 
-/* ── Cards (Glass) ── */
-.card {
-  background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  padding: 18px;
-  display: flex; flex-direction: column; gap: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(201, 169, 78, 0.06);
-}
-.card-header {
-  font-size: 0.68rem; text-transform: uppercase;
-  letter-spacing: 0.14em; color: var(--cream-muted); font-weight: 600;
-}
-.card.current {
-  border-color: rgba(45, 154, 84, 0.4);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(45,154,84,0.12), 0 0 0 1px rgba(45,154,84,0.08);
-}
-.card.next {
-  border-color: rgba(201, 169, 78, 0.22);
-}
-.card.break-card {
-  border-color: rgba(180, 140, 80, 0.3);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(180,140,80,0.08);
-}
-.card.current .card-header { color: var(--emerald-bright); }
-.card.next .card-header { color: var(--gold-dim); }
-.card.break-card .card-header { color: var(--gold-pale); }
+        .interaction-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 560px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            justify-content: center;
+            width: 100%;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 14px 18px;
+            border-radius: var(--radius-lg);
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            border: 1px solid transparent;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-nav {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--gold);
+            flex: 1;
+        }
+        .btn-nav:hover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--gold);
+            color: #fff;
+        }
+        .btn-play {
+            background: linear-gradient(135deg, #186835, #228b45);
+            border-color: #2eb85c;
+            color: #fff;
+            font-size: 1.15rem;
+            flex: 1.5;
+            box-shadow: 0 8px 30px rgba(34, 139, 69, 0.4);
+        }
+        .btn-play:hover {
+            background: linear-gradient(135deg, #1c7c3f, #28a754);
+            box-shadow: 0 8px 40px rgba(34, 139, 69, 0.6);
+        }
+        .btn-play.paused-state {
+            background: rgba(25, 35, 25, 0.6);
+            border-color: rgba(212, 175, 55, 0.4);
+            color: var(--cream);
+            box-shadow: none;
+        }
+        .seek-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+        .seek-time {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            color: var(--cream-muted);
+            min-width: 44px;
+            text-align: center;
+        }
+        .seek-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            outline: none;
+            cursor: pointer;
+        }
+        .seek-slider::-webkit-slider-runnable-track {
+            background: linear-gradient(90deg, var(--gold) 0%, rgba(212, 175, 55, 0.2) 100%);
+            height: 8px;
+            border-radius: 4px;
+        }
+        .seek-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin-top: -10px;
+            background: #fff;
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .seek-slider::-webkit-slider-thumb:active {
+            transform: scale(1.2);
+        }
 
-.blind-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-}
-.blind-label { font-size: 0.78rem; color: var(--cream-muted); font-weight: 500; }
-.blind-value {
-  font-family: var(--font-mono);
-  font-size: 1.35rem; font-weight: 600; color: #fff;
-  letter-spacing: 0.02em;
-}
-.blind-value.sub { font-size: 1rem; color: var(--cream-dim); }
-.blind-sep {
-  height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,78,0.2), transparent);
-  margin: 2px 0;
-}
+        .timeline {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 6px 0;
+            max-width: 700px;
+        }
+        .timeline-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .timeline-dot.done {
+            background: var(--emerald);
+            border-color: var(--emerald-bright);
+            box-shadow: 0 0 10px rgba(34, 139, 69, 0.5);
+        }
+        .timeline-dot.now {
+            background: var(--gold);
+            border-color: #fff;
+            transform: scale(1.6);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+        }
+        .timeline-dot.break-dot {
+            border-radius: 3px;
+        }
+        .timeline-dot.break-dot.done {
+            background: var(--gold-dim);
+            border-color: var(--gold);
+        }
 
-/* ── Info Grid ── */
-.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .settings-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .settings-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .settings-panel {
+            background: var(--felt);
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            width: 100%;
+            max-width: 800px;
+            max-height: 85dvh;
+            overflow-y: auto;
+            padding: 10px 30px 40px;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .settings-overlay.open .settings-panel {
+            transform: translateY(0);
+        }
+        .settings-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 10px auto;
+        }
+        .settings-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 15px;
+        }
+        .settings-head h2 {
+            font-size: 1.4rem;
+            color: var(--gold);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+        .settings-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .settings-block h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--cream-muted);
+            margin-bottom: 15px;
+        }
+        .img-upload-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .img-upload-btn {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: var(--cream);
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .img-upload-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold);
+        }
+        .img-upload-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            border: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .img-upload-name {
+            font-size: 0.8rem;
+            color: var(--cream-dim);
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .img-clear-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 85, 85, 0.4);
+            color: #ff5555;
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .img-clear-btn:hover {
+            background: rgba(255, 85, 85, 0.1);
+        }
 
-/* ── Stats ── */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-}
-.stat-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  display: flex; flex-direction: column; gap: 5px;
-}
-.stat-label {
-  font-size: 0.66rem; text-transform: uppercase;
-  letter-spacing: 0.1em; color: var(--cream-muted); font-weight: 500;
-}
-.stat-value {
-  font-family: var(--font-mono);
-  font-size: 1.1rem; font-weight: 600; color: #fff;
-}
-.stat-value.gold { color: var(--gold-light); }
-.stat-input {
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(201, 169, 78, 0.2);
-  border-radius: 6px;
-  color: #fff;
-  font-family: var(--font-mono);
-  font-size: 1rem; font-weight: 500;
-  padding: 8px 10px; width: 100%; outline: none;
-  transition: border 0.25s;
-}
-.stat-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,169,78,0.08); }
-.stat-input[type="number"] { -moz-appearance: textfield; }
-.stat-input[type="number"]::-webkit-inner-spin-button,
-.stat-input[type="number"]::-webkit-outer-spin-button { opacity: 0.6; filter: invert(0.7); }
+        .level-edit-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 1fr 1fr 1fr 60px 40px;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .level-edit-row.head {
+            color: var(--gold-dim);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .level-edit-row .lvl-num {
+            font-weight: bold;
+            color: var(--cream-dim);
+            text-align: center;
+        }
+        .level-edit-row input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            padding: 8px;
+            text-align: center;
+        }
+        .level-edit-row input:focus {
+            border-color: var(--gold);
+        }
+        .level-edit-row .brk-tgl {
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--cream-muted);
+            font-size: 0.75rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            user-select: none;
+        }
+        .level-edit-row .brk-tgl.on {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+        .row-del {
+            background: rgba(255, 50, 50, 0.1);
+            border: 1px solid rgba(255, 50, 50, 0.3);
+            color: #ff5555;
+            border-radius: 6px;
+            cursor: pointer;
+            height: 100%;
+            font-size: 0.9rem;
+            padding: 6px;
+        }
 
-/* ── Prize ── */
-.prize-section {
-  background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  padding: 18px;
-}
-.prize-head {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(201, 169, 78, 0.12);
-}
-.prize-head-label {
-  font-size: 0.68rem; text-transform: uppercase;
-  letter-spacing: 0.12em; color: var(--cream-muted); font-weight: 600;
-}
-.prize-head-total {
-  font-family: var(--font-mono);
-  font-size: 1.5rem; font-weight: 300; color: var(--gold-light);
-  letter-spacing: 0.03em;
-}
-.prize-list { display: flex; flex-direction: column; gap: 7px; }
-.prize-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 9px 14px;
-  background: rgba(201, 169, 78, 0.04);
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(201, 169, 78, 0.08);
-  transition: all 0.25s;
-}
-.prize-item:hover { background: rgba(201, 169, 78, 0.08); border-color: rgba(201, 169, 78, 0.2); }
-.prize-place { font-weight: 700; font-size: 0.85rem; color: var(--gold); min-width: 30px; }
-.prize-pct { font-size: 0.78rem; color: var(--cream-dim); min-width: 38px; }
-.prize-amount { font-family: var(--font-mono); font-weight: 500; font-size: 0.95rem; margin-left: auto; color: #fff; }
+        .settings-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .btn-save {
+            background: var(--gold);
+            color: #000;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 15px;
+            border-radius: var(--radius);
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .btn-preset {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: var(--cream);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-preset:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--gold);
+        }
+        .btn-ghost-sm {
+            background: transparent;
+            color: var(--cream-muted);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-ghost-sm:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+        }
 
-/* ── Timeline Dots ── */
-.timeline {
-  display: flex; gap: 5px; flex-wrap: wrap; justify-content: center;
-  padding: 4px 0;
-}
-.timeline-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-.timeline-dot.done { background: var(--emerald); border-color: var(--emerald-bright); box-shadow: 0 0 6px rgba(26,107,60,0.4); }
-.timeline-dot.now {
-  background: var(--gold);
-  border-color: var(--gold-light);
-  transform: scale(1.5);
-  box-shadow: 0 0 10px rgba(201, 169, 78, 0.5);
-}
-.timeline-dot.break-dot { border-radius: 2px; }
-.timeline-dot.break-dot.done { background: var(--gold-dim); border-color: var(--gold); }
+        .toast {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-120px);
+            background: rgba(20, 30, 20, 0.95);
+            border: 1px solid var(--gold);
+            border-radius: 30px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            pointer-events: none;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
 
-/* ── Settings Panel ── */
-.settings-overlay {
-  position: fixed; inset: 0;
-  background: rgba(2, 6, 2, 0.8); backdrop-filter: blur(8px);
-  z-index: 200;
-  display: flex; align-items: flex-end; justify-content: center;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-.settings-overlay.open { opacity: 1; pointer-events: auto; }
-.settings-panel {
-  background: linear-gradient(180deg, rgba(14, 28, 14, 0.98), rgba(8, 18, 8, 0.98));
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(201, 169, 78, 0.15);
-  border-bottom: none;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  width: 100%; max-width: 700px;
-  max-height: 88dvh; overflow-y: auto;
-  padding: 8px 20px 28px;
-  transform: translateY(20px);
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex; flex-direction: column; gap: 16px;
-}
-.settings-overlay.open .settings-panel { transform: translateY(0); }
-.settings-handle {
-  width: 32px; height: 3px;
-  background: rgba(201, 169, 78, 0.25); border-radius: 2px;
-  margin: 10px auto 2px;
-}
-.settings-head {
-  display: flex; justify-content: space-between; align-items: center;
-}
-.settings-head h2 {
-  font-family: var(--font-display);
-  font-size: 1.1rem; font-weight: 700; color: var(--gold);
-  letter-spacing: 0.04em;
-}
-.settings-block {
-  background: rgba(10, 22, 10, 0.5);
-  border: 1px solid rgba(201, 169, 78, 0.1);
-  border-radius: var(--radius);
-  padding: 16px;
-}
-.settings-block h3 {
-  font-size: 0.7rem; text-transform: uppercase;
-  letter-spacing: 0.1em; color: var(--cream-muted);
-  margin-bottom: 12px; font-weight: 500;
-}
+        @media (max-width: 1100px) {
+            :root {
+                --side-col-width: 240px;
+            }
+            .side-card .stat-value {
+                font-size: 2rem;
+            }
+            .side-card .stat-value.gold {
+                font-size: 2.2rem;
+            }
+            .side-card .stat-value.next-blinds {
+                font-size: 2rem;
+            }
+            .side-card .stat-input {
+                font-size: 1.8rem;
+            }
+            .side-card .stat-label {
+                font-size: 0.85rem;
+            }
+            .side-card {
+                padding: 14px 10px;
+                gap: 8px;
+            }
+            .timer-time {
+                font-size: clamp(5.5rem, 15vw, 10rem);
+            }
+            .tcur-sb,
+            .tcur-bb {
+                font-size: clamp(2rem, 5.5vw, 4rem);
+            }
+            .tcur-div {
+                font-size: clamp(1.6rem, 4vw, 3.5rem);
+            }
+            .timer-cur-ante {
+                font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            }
+            .timer-next-level {
+                font-size: clamp(1rem, 2vw, 1.4rem);
+            }
+        }
 
-/* ── Level Editor ── */
-.level-editor { display: flex; flex-direction: column; gap: 7px; }
-.level-edit-row {
-  display: grid;
-  grid-template-columns: 32px 1fr 1fr 0.7fr 0.7fr 56px 32px;
-  gap: 5px; align-items: center; font-size: 0.78rem;
-}
-.level-edit-row.head {
-  color: var(--cream-muted); font-size: 0.66rem;
-  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: -2px;
-}
-.level-edit-row .lvl-num {
-  font-weight: 600; color: var(--cream-muted); text-align: center; font-size: 0.72rem;
-}
-.level-edit-row input {
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(201, 169, 78, 0.15);
-  border-radius: 5px; color: #fff;
-  font-family: var(--font-mono); font-size: 0.75rem;
-  padding: 6px 6px; width: 100%; outline: none; text-align: center;
-  transition: border 0.25s;
-}
-.level-edit-row input:focus { border-color: var(--gold); }
-.level-edit-row input:disabled { opacity: 0.35; }
-.level-edit-row .brk-tgl {
-  cursor: pointer; padding: 3px 4px; border-radius: 4px;
-  border: 1px solid rgba(201, 169, 78, 0.15);
-  background: rgba(0,0,0,0.3); color: var(--cream-muted);
-  font-size: 0.66rem; text-align: center;
-  transition: all 0.25s; user-select: none;
-}
-.level-edit-row .brk-tgl.on {
-  background: rgba(180, 140, 80, 0.15);
-  border-color: rgba(201, 169, 78, 0.35);
-  color: var(--gold);
-}
-.row-del {
-  width: 26px; height: 26px; border-radius: 5px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: rgba(0,0,0,0.3); color: var(--cream-muted);
-  cursor: pointer; font-size: 0.8rem;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-}
-.row-del:hover { background: rgba(200, 60, 40, 0.3); border-color: rgba(200, 60, 40, 0.5); color: #e88; }
+        @media (max-width: 900px) {
+            .main {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                grid-template-areas:
+                    "center"
+                    "side-row";
+                gap: 16px;
+                padding: 10px 16px;
+                align-items: start;
+            }
+            .side-left {
+                grid-area: unset;
+                padding: 0;
+                display: none;
+            }
+            .side-right {
+                grid-area: unset;
+                padding: 0;
+                display: none;
+            }
+            .side-card {
+                flex: 1 1 calc(50% - 8px);
+                min-width: 140px;
+                padding: 14px 12px;
+                gap: 6px;
+            }
+            .side-card .stat-value {
+                font-size: 1.8rem;
+            }
+            .side-card .stat-value.gold {
+                font-size: 2rem;
+            }
+            .side-card .stat-input {
+                font-size: 1.6rem;
+            }
+            .side-card .stat-label {
+                font-size: 0.7rem;
+                letter-spacing: 0.1em;
+            }
+            .side-row {
+                grid-area: side-row;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                width: 100%;
+            }
+            .side-row .side-card {
+                flex: 1 1 calc(50% - 8px);
+                min-width: 150px;
+            }
+            .center-col {
+                padding: 4px 8px;
+                gap: 10px;
+            }
+            .timer-time {
+                font-size: clamp(5rem, 22vw, 9rem);
+            }
+            .tcur-sb,
+            .tcur-bb {
+                font-size: clamp(2rem, 8vw, 3.5rem);
+            }
+            .tcur-div {
+                font-size: clamp(1.5rem, 6vw, 3rem);
+            }
+            .timer-cur-ante {
+                font-size: clamp(1rem, 3.5vw, 1.6rem);
+            }
+            .timer-next-level {
+                font-size: clamp(0.85rem, 3vw, 1.3rem);
+            }
+            .level-chip {
+                font-size: 1.1rem;
+                padding: 6px 20px;
+            }
+            .btn {
+                font-size: 1rem;
+                padding: 12px 14px;
+            }
+            .interaction-area {
+                max-width: 480px;
+                gap: 10px;
+            }
+            .timeline-dot {
+                width: 11px;
+                height: 11px;
+            }
+        }
 
-/* ── Settings Actions ── */
-.settings-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-save {
-  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-  border-color: var(--gold); color: #0a0a0a;
-  font-weight: 700; flex: 1; justify-content: center;
-}
-.btn-save:hover { background: linear-gradient(135deg, var(--gold), var(--gold-light)); }
-.btn-preset {
-  background: transparent; border-color: rgba(201, 169, 78, 0.2);
-  color: var(--cream-dim); font-size: 0.78rem;
-}
-.btn-preset:hover { background: rgba(201, 169, 78, 0.08); border-color: rgba(201, 169, 78, 0.4); color: var(--cream); }
-
-/* ── Toast ── */
-.toast {
-  position: fixed; bottom: 28px; left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: rgba(20, 35, 20, 0.95);
-  border: 1px solid rgba(201, 169, 78, 0.3);
-  backdrop-filter: blur(16px);
-  border-radius: var(--radius-lg);
-  padding: 10px 22px; font-size: 0.85rem; font-weight: 500;
-  color: var(--cream); z-index: 300;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-}
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-/* ── Responsive ── */
-@media (min-width: 640px) {
-  .level-edit-row {
-    grid-template-columns: 36px 1fr 1fr 1fr 1fr 72px 32px;
-  }
-}
-@media (min-width: 900px) {
-  .main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto;
-    gap: 18px;
-  }
-  .timer-hero { grid-column: 1; grid-row: 1 / 3; }
-  .info-grid { grid-column: 2; grid-row: 1; }
-  .stats-row { grid-column: 1 / -1; grid-row: 3; }
-  .prize-section { grid-column: 2; grid-row: 2; }
-  .timeline { grid-column: 1 / -1; }
-  .timer-stage {
-    width: min(340px, 36vw);
-    height: min(340px, 36vw);
-  }
-}
-@media (min-width: 1200px) {
-  .main {
-    grid-template-columns: 360px 1fr 300px;
-    grid-template-rows: auto auto;
-  }
-  .timer-hero { grid-column: 1; grid-row: 1 / 3; }
-  .info-grid { grid-column: 2; grid-row: 1; }
-  .prize-section { grid-column: 3; grid-row: 1 / 3; }
-  .stats-row { grid-column: 2; grid-row: 2; }
-}
-
-/* ── Scrollbar ── */
-.settings-panel::-webkit-scrollbar { width: 4px; }
-.settings-panel::-webkit-scrollbar-track { background: transparent; }
-.settings-panel::-webkit-scrollbar-thumb { background: rgba(201,169,78,0.2); border-radius: 4px; }
-
-/* ── Reduced Motion ── */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-</style>
+        @media (max-width: 500px) {
+            .main {
+                padding: 8px 8px;
+                gap: 12px;
+            }
+            .side-row .side-card {
+                flex: 1 1 100%;
+                min-width: 0;
+            }
+            .side-row {
+                gap: 8px;
+            }
+            .timer-cur-blinds {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .tcur-div {
+                display: none;
+            }
+            .timer-time {
+                font-size: clamp(3.5rem, 26vw, 6rem);
+            }
+            .tcur-sb,
+            .tcur-bb {
+                font-size: clamp(1.6rem, 10vw, 2.5rem);
+            }
+            .btn {
+                font-size: 0.85rem;
+                padding: 10px 10px;
+                letter-spacing: 0.04em;
+            }
+            .seek-time {
+                font-size: 0.9rem;
+                min-width: 36px;
+            }
+            .timeline-dot {
+                width: 9px;
+                height: 9px;
+                gap: 4px;
+            }
+            .timeline {
+                gap: 4px;
+            }
+            .level-edit-row {
+                grid-template-columns: 28px 1fr 1fr 1fr 1fr 44px 28px;
+                gap: 4px;
+                font-size: 0.7rem;
+            }
+            .level-edit-row input {
+                font-size: 0.7rem;
+                padding: 6px 4px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-  <div class="header-brand">
-    <div class="header-logo">♠</div>
-    <span class="header-title">Poker Blind Timer</span>
-  </div>
-  <div class="header-actions">
-    <button class="icon-btn" id="btnSound" title="声音" aria-label="声音开关">🔊</button>
-    <button class="icon-btn" id="btnFullscreen" title="全屏" aria-label="全屏模式">⛶</button>
-    <button class="icon-btn" id="btnSettings" title="设置" aria-label="设置">⚙</button>
-  </div>
-</header>
-
-<!-- Main -->
-<main class="main">
-
-  <!-- Timer Hero -->
-  <section class="timer-hero">
-    <div class="level-chip" id="levelBadge">Level 1 / 12</div>
-    <div class="timer-stage">
-      <svg class="timer-ring" viewBox="0 0 200 200">
-        <defs>
-          <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#c9a94e"/>
-            <stop offset="50%" stop-color="#e0c878"/>
-            <stop offset="100%" stop-color="#c9a94e"/>
-          </linearGradient>
-          <linearGradient id="ringGradientBreak" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#b48c50"/>
-            <stop offset="100%" stop-color="#d4a860"/>
-          </linearGradient>
-        </defs>
-        <circle class="timer-ring-bg" cx="100" cy="100" r="93"/>
-        <circle class="timer-ring-fill" id="timerRingFill" cx="100" cy="100" r="93"
-          stroke-dasharray="584.34" stroke-dashoffset="0"/>
-      </svg>
-      <div class="timer-face">
-        <div class="timer-time" id="timerDisplay">15:00</div>
-        <div class="timer-sub" id="timerLabel">LEVEL TIME</div>
-      </div>
-    </div>
-    <div class="controls">
-      <button class="btn btn-play" id="btnPlay" aria-label="开始/暂停">
-        <span id="btnPlayIcon">▶</span>
-        <span id="btnPlayText">开始</span>
-      </button>
-      <button class="btn btn-gold" id="btnNext" aria-label="下一级">下一级 ▶▶</button>
-      <button class="btn btn-ghost btn-sm" id="btnReset" aria-label="重置">↺</button>
-    </div>
-  </section>
-
-  <!-- Blind Info -->
-  <section class="info-grid">
-    <div class="card current" id="currentCard">
-      <span class="card-header">当前盲注</span>
-      <div class="blind-row"><span class="blind-label">小盲 SB</span><span class="blind-value" id="currentSB">100</span></div>
-      <div class="blind-row"><span class="blind-label">大盲 BB</span><span class="blind-value" id="currentBB">200</span></div>
-      <div class="blind-sep"></div>
-      <div class="blind-row"><span class="blind-label">Ante</span><span class="blind-value sub" id="currentAnte">200</span></div>
-    </div>
-    <div class="card next" id="nextCard">
-      <span class="card-header">下一级盲注</span>
-      <div class="blind-row"><span class="blind-label">小盲 SB</span><span class="blind-value" id="nextSB">200</span></div>
-      <div class="blind-row"><span class="blind-label">大盲 BB</span><span class="blind-value" id="nextBB">300</span></div>
-      <div class="blind-sep"></div>
-      <div class="blind-row"><span class="blind-label">Ante</span><span class="blind-value sub" id="nextAnte">300</span></div>
-    </div>
-  </section>
-
-  <!-- Stats -->
-  <section class="stats-row">
-    <div class="stat-card"><span class="stat-label">选手总数</span><input type="number" class="stat-input" id="playerCount" min="2" max="9999" value="10" aria-label="选手总数"></div>
-    <div class="stat-card"><span class="stat-label">总筹码</span><input type="number" class="stat-input" id="totalChips" min="0" step="1000" value="200000" aria-label="总筹码数"></div>
-    <div class="stat-card"><span class="stat-label">平均筹码 AVG</span><span class="stat-value gold" id="avgStack">20,000</span></div>
-    <div class="stat-card"><span class="stat-label">报名费 / 人</span><input type="number" class="stat-input" id="buyIn" min="0" step="100" value="1000" aria-label="每人报名费"></div>
-  </section>
-
-  <!-- Prize Pool -->
-  <section class="prize-section">
-    <div class="prize-head">
-      <span class="prize-head-label">🏆 奖池分配</span>
-      <span class="prize-head-total" id="prizeTotal">¥10,000</span>
-    </div>
-    <div class="prize-list" id="prizeList"></div>
-  </section>
-
-  <!-- Timeline -->
-  <div class="timeline" id="levelDots"></div>
-</main>
-
-<!-- Settings Overlay -->
-<div class="settings-overlay" id="settingsOverlay">
-  <div class="settings-panel">
-    <div class="settings-handle"></div>
-    <div class="settings-head">
-      <h2>设置</h2>
-      <button class="icon-btn" id="btnCloseSettings">✕</button>
-    </div>
-
-    <div class="settings-block">
-      <h3>快速预设</h3>
-      <div class="settings-actions">
-        <button class="btn btn-preset" data-preset="standard">标准锦标赛</button>
-        <button class="btn btn-preset" data-preset="turbo">快速 Turbo</button>
-        <button class="btn btn-preset" data-preset="deep">深筹 Deep</button>
-        <button class="btn btn-preset" data-preset="sitngo">SNG 9人</button>
-      </div>
-    </div>
-
-    <div class="settings-block">
-      <h3>盲注结构</h3>
-      <div class="level-editor">
-        <div class="level-edit-row head">
-          <span></span><span>小盲</span><span>大盲</span><span>Ante</span><span>时长(分)</span><span>模式</span><span></span>
+    <header class="header">
+        <div class="header-brand">
+            <div class="header-logo">♠</div>
+            <span class="header-title">AA Suited Bar Poker Tour</span>
         </div>
-        <div id="levelEditorRows"></div>
-      </div>
-      <button class="btn btn-gold btn-sm" id="btnAddLevel" style="margin-top:10px;">+ 添加级别</button>
+        <div class="header-actions">
+            <button class="icon-btn" id="btnSound" title="声音" aria-label="声音开关">🔊</button>
+            <button class="icon-btn" id="btnFullscreen" title="全屏" aria-label="全屏模式">⛶</button>
+            <button class="icon-btn" id="btnSettings" title="设置" aria-label="设置">⚙</button>
+        </div>
+    </header>
+
+    <main class="main">
+
+        <div class="side-left" id="sideLeftDesktop">
+            <img class="side-left-img" id="sideLeftImg" src="" alt="" style="display:none;">
+            <div class="side-left-placeholder" id="sideLeftPlaceholder">UPLOAD LOGO<br>IN SETTINGS</div>
+        </div>
+
+        <div class="center-col">
+            <section class="timer-hero" style="display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;">
+                <div class="level-chip" id="levelBadge">LEVEL 1 / 12</div>
+                <div class="timer-display-wrapper">
+                    <div class="timer-time" id="timerDisplay">15:00</div>
+                    <div class="timer-cur-blinds">
+                        <span class="tcur-sb" id="timerSB">100</span>
+                        <span class="tcur-div" id="timerDiv">/</span>
+                        <span class="tcur-bb" id="timerBB">200</span>
+                    </div>
+                    <div class="timer-cur-ante" id="timerAnte">ANTE 200</div>
+                    <div class="timer-next-level" id="timerNextLevel">NEXT 200 / 400</div>
+                </div>
+            </section>
+
+            <section class="interaction-area">
+                <div class="controls">
+                    <button class="btn btn-nav" id="btnPrev">◀ PREV</button>
+                    <button class="btn btn-play" id="btnPlay">
+                        <span id="btnPlayIcon">▶</span>&nbsp;
+                        <span id="btnPlayText">START</span>
+                    </button>
+                    <button class="btn btn-nav" id="btnNext">NEXT ▶</button>
+                </div>
+                <div class="seek-bar" id="seekBarContainer">
+                    <span class="seek-time seek-left" id="seekElapsed">00:00</span>
+                    <input type="range" class="seek-slider" id="seekSlider" min="0" max="100" value="100">
+                    <span class="seek-time seek-right" id="seekTotal">15:00</span>
+                </div>
+                <div class="timeline" id="levelDots"></div>
+            </section>
+        </div>
+
+        <div class="side-right" id="sideRightDesktop">
+            <div class="side-card" id="avgCard">
+                <span class="stat-label">AVG STACK</span>
+                <span class="stat-value" id="avgStack">20,000</span>
+            </div>
+            <div class="side-card" id="chipsCard">
+                <span class="stat-label">TOTAL CHIPS</span>
+                <input type="number" class="stat-input" id="totalChips" min="0" step="1000" value="200000">
+            </div>
+            <div class="side-card" id="playersCard">
+                <span class="stat-label">PLAYERS</span>
+                <input type="number" class="stat-input" id="playerCount" min="2" max="9999" value="10">
+            </div>
+        </div>
+
+        <div class="side-row" id="sideRowMobile" style="display:none;">
+            <div class="side-card" id="avgCardMobile">
+                <span class="stat-label">AVG STACK</span>
+                <span class="stat-value" id="avgStackMobile">20,000</span>
+            </div>
+            <div class="side-card" id="chipsCardMobile">
+                <span class="stat-label">TOTAL CHIPS</span>
+                <input type="number" class="stat-input" id="totalChipsMobile" min="0" step="1000" value="200000">
+            </div>
+            <div class="side-card" id="playersCardMobile">
+                <span class="stat-label">PLAYERS</span>
+                <input type="number" class="stat-input" id="playerCountMobile" min="2" max="9999" value="10">
+            </div>
+        </div>
+    </main>
+
+    <div class="settings-overlay" id="settingsOverlay">
+        <div class="settings-panel">
+            <div class="settings-handle"></div>
+            <div class="settings-head">
+                <h2>TOURNAMENT SETTINGS</h2>
+                <button class="icon-btn" id="btnCloseSettings" style="border:none; background:transparent;">✕</button>
+            </div>
+            <div class="settings-block">
+                <h3>PRESETS</h3>
+                <div class="settings-actions" style="margin-top:0">
+                    <button class="btn-preset" data-preset="standard">Standard</button>
+                    <button class="btn-preset" data-preset="turbo">Turbo</button>
+                    <button class="btn-preset" data-preset="deep">Deep Stack</button>
+                    <button class="btn-preset" data-preset="sitngo">SNG 9-Max</button>
+                </div>
+            </div>
+            <div class="settings-block">
+                <h3>LOGO IMAGE</h3>
+                <div class="img-upload-row">
+                    <img class="img-upload-preview" id="imgPreview" src="" alt="" style="display:none;">
+                    <span class="img-upload-name" id="imgName" style="display:none;"></span>
+                    <button class="img-upload-btn" id="btnUploadImg">UPLOAD IMAGE</button>
+                    <input type="file" id="imgFileInput" accept="image/*" style="display:none;">
+                    <button class="img-clear-btn" id="btnClearImg" style="display:none;">REMOVE</button>
+                </div>
+            </div>
+            <div class="settings-block">
+                <h3>BLIND STRUCTURE</h3>
+                <div class="level-edit-row head">
+                    <span></span><span>SB</span><span>BB</span><span>ANTE</span><span>MIN</span><span>TYPE</span><span></span>
+                </div>
+                <div id="levelEditorRows"></div>
+                <button class="btn-preset" id="btnAddLevel" style="margin-top:15px; width:100%; border-style:dashed;">+ ADD LEVEL</button>
+            </div>
+            <div class="settings-actions">
+                <button class="btn-save" id="btnSaveSettings">SAVE & APPLY</button>
+                <button class="btn-ghost-sm" id="btnResetAll">RESET</button>
+            </div>
+        </div>
     </div>
 
-    <div class="settings-block">
-      <h3>支付结构 (%)</h3>
-      <div style="display:flex;flex-direction:column;gap:6px;" id="prizeEditor"></div>
-      <button class="btn btn-gold btn-sm" id="btnAddPrize" style="margin-top:10px;">+ 添加名次</button>
-    </div>
-
-    <div class="settings-actions">
-      <button class="btn btn-save" id="btnSaveSettings">保存设置</button>
-      <button class="btn btn-ghost btn-sm" id="btnResetAll">重置所有数据</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-﻿<script>
-// ── Default Presets ──
-const PRESETS = {
-  standard: {
-    name: '标准锦标赛',
-    levels: [
-      { sb:100, bb:200, ante:200, dur:15, brk:false },
-      { sb:200, bb:300, ante:300, dur:15, brk:false },
-      { sb:200, bb:400, ante:400, dur:15, brk:false },
-      { sb:300, bb:500, ante:500, dur:15, brk:false },
-      { sb:400, bb:800, ante:800, dur:15, brk:false },
-      { sb:500, bb:1000, ante:1000, dur:15, brk:true },
-      { sb:600, bb:1200, ante:1200, dur:15, brk:false },
-      { sb:800, bb:1600, ante:1600, dur:15, brk:false },
-      { sb:1000, bb:2000, ante:2000, dur:15, brk:false },
-      { sb:1500, bb:3000, ante:3000, dur:15, brk:false },
-      { sb:2000, bb:4000, ante:4000, dur:15, brk:false },
-      { sb:3000, bb:6000, ante:6000, dur:15, brk:false },
-    ],
-    prizes: [{place:1,pct:50},{place:2,pct:30},{place:3,pct:20}]
-  },
-  turbo: {
-    name: '快速 Turbo',
-    levels: [
-      { sb:100, bb:200, ante:200, dur:8, brk:false },
-      { sb:200, bb:400, ante:400, dur:8, brk:false },
-      { sb:300, bb:600, ante:600, dur:8, brk:false },
-      { sb:500, bb:1000, ante:1000, dur:8, brk:false },
-      { sb:800, bb:1600, ante:1600, dur:8, brk:false },
-      { sb:1200, bb:2400, ante:2400, dur:8, brk:true },
-      { sb:2000, bb:4000, ante:4000, dur:8, brk:false },
-      { sb:3000, bb:6000, ante:6000, dur:8, brk:false },
-      { sb:5000, bb:10000, ante:10000, dur:8, brk:false },
-      { sb:8000, bb:16000, ante:16000, dur:8, brk:false },
-    ],
-    prizes: [{place:1,pct:60},{place:2,pct:40}]
-  },
-  deep: {
-    name: '深筹 Deep',
-    levels: [
-      { sb:50, bb:100, ante:100, dur:20, brk:false },
-      { sb:100, bb:200, ante:200, dur:20, brk:false },
-      { sb:150, bb:300, ante:300, dur:20, brk:false },
-      { sb:200, bb:400, ante:400, dur:20, brk:false },
-      { sb:300, bb:600, ante:600, dur:20, brk:false },
-      { sb:400, bb:800, ante:800, dur:20, brk:true },
-      { sb:500, bb:1000, ante:1000, dur:20, brk:false },
-      { sb:600, bb:1200, ante:1200, dur:20, brk:false },
-      { sb:800, bb:1600, ante:1600, dur:20, brk:false },
-      { sb:1000, bb:2000, ante:2000, dur:20, brk:false },
-      { sb:1200, bb:2400, ante:2400, dur:20, brk:false },
-      { sb:1500, bb:3000, ante:3000, dur:20, brk:false },
-      { sb:2000, bb:4000, ante:4000, dur:20, brk:true },
-      { sb:2500, bb:5000, ante:5000, dur:20, brk:false },
-      { sb:3000, bb:6000, ante:6000, dur:20, brk:false },
-      { sb:4000, bb:8000, ante:8000, dur:20, brk:false },
-    ],
-    prizes: [{place:1,pct:40},{place:2,pct:25},{place:3,pct:15},{place:4,pct:10},{place:5,pct:10}]
-  },
-  sitngo: {
-    name: 'SNG 9人',
-    levels: [
-      { sb:100, bb:200, ante:0, dur:10, brk:false },
-      { sb:150, bb:300, ante:300, dur:10, brk:false },
-      { sb:200, bb:400, ante:400, dur:10, brk:false },
-      { sb:300, bb:600, ante:600, dur:10, brk:false },
-      { sb:400, bb:800, ante:800, dur:10, brk:false },
-      { sb:600, bb:1200, ante:1200, dur:10, brk:true },
-      { sb:800, bb:1600, ante:1600, dur:10, brk:false },
-      { sb:1000, bb:2000, ante:2000, dur:10, brk:false },
-      { sb:1500, bb:3000, ante:3000, dur:10, brk:false },
-      { sb:2000, bb:4000, ante:4000, dur:10, brk:false },
-      { sb:3000, bb:6000, ante:6000, dur:10, brk:false },
-    ],
-    prizes: [{place:1,pct:50},{place:2,pct:30},{place:3,pct:20}]
-  }
-};
-
-// ── State ──
-const DEFAULT_STATE = {
-  levels: [
-    { smallBlind:100, bigBlind:200, ante:200, durationMinutes:15, isBreak:false },
-    { smallBlind:200, bigBlind:300, ante:300, durationMinutes:15, isBreak:false },
-    { smallBlind:200, bigBlind:400, ante:400, durationMinutes:15, isBreak:false },
-    { smallBlind:300, bigBlind:500, ante:500, durationMinutes:15, isBreak:false },
-    { smallBlind:400, bigBlind:800, ante:800, durationMinutes:15, isBreak:false },
-    { smallBlind:500, bigBlind:1000, ante:1000, durationMinutes:15, isBreak:true },
-    { smallBlind:600, bigBlind:1200, ante:1200, durationMinutes:15, isBreak:false },
-    { smallBlind:800, bigBlind:1600, ante:1600, durationMinutes:15, isBreak:false },
-    { smallBlind:1000, bigBlind:2000, ante:2000, durationMinutes:15, isBreak:false },
-    { smallBlind:1500, bigBlind:3000, ante:3000, durationMinutes:15, isBreak:false },
-    { smallBlind:2000, bigBlind:4000, ante:4000, durationMinutes:15, isBreak:false },
-    { smallBlind:3000, bigBlind:6000, ante:6000, durationMinutes:15, isBreak:false },
-  ],
-  currentLevelIndex: 0,
-  remainingSeconds: 900,
-  isRunning: false,
-  playerCount: 10,
-  totalChips: 200000,
-  buyIn: 1000,
-  prizeStructure: [
-    { place: 1, percentage: 50 },
-    { place: 2, percentage: 30 },
-    { place: 3, percentage: 20 },
-  ],
-};
-
-let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-let timerInterval = null;
-let wakeLock = null;
-let soundEnabled = true;
-
-// ── Load / Save ──
-function loadState() {
-  try {
-    const saved = localStorage.getItem('poker_blind_timer_state');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      // Merge with defaults so new fields are never missing
-      state = { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...parsed };
-      // Ensure nested arrays exist
-      if (!state.levels || !Array.isArray(state.levels) || state.levels.length === 0) {
-        state.levels = JSON.parse(JSON.stringify(DEFAULT_STATE.levels));
-      }
-      if (!state.prizeStructure || !Array.isArray(state.prizeStructure) || state.prizeStructure.length === 0) {
-        state.prizeStructure = JSON.parse(JSON.stringify(DEFAULT_STATE.prizeStructure));
-      }
-      // Validate currentLevelIndex
-      if (state.currentLevelIndex >= state.levels.length) {
-        state.currentLevelIndex = 0;
-        state.remainingSeconds = state.levels[0].durationMinutes * 60;
-      }
-      // Ensure remainingSeconds is valid
-      if (typeof state.remainingSeconds !== 'number' || state.remainingSeconds < 0) {
-        state.remainingSeconds = (state.levels[state.currentLevelIndex]?.durationMinutes || 15) * 60;
-      }
-      // Always stop timer on load
-      state.isRunning = false;
-    }
-  } catch (e) {
-    console.warn('Failed to load state:', e);
-    state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-  }
-}
-
-function saveState() {
-  try {
-    localStorage.setItem('poker_blind_timer_state', JSON.stringify(state));
-  } catch (e) {
-    console.warn('Failed to save state:', e);
-    showToast('⚠ 保存失败，存储空间不足');
-  }
-}
-
-// ── Audio ──
-let audioCtx = null;
-function getAudioCtx() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  return audioCtx;
-}
-
-function playBeep(freq, duration, type = 'square', vol = 0.08) {
-  if (!soundEnabled) return;
-  try {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    gain.gain.setValueAtTime(vol, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + duration);
-  } catch (e) { /* audio not available */ }
-}
-
-function playLevelChangeSound() {
-  playBeep(880, 0.15, 'square', 0.1);
-  setTimeout(() => playBeep(1100, 0.3, 'square', 0.1), 150);
-}
-
-function playBreakStartSound() {
-  playBeep(660, 0.2, 'sine', 0.08);
-  setTimeout(() => playBeep(880, 0.4, 'sine', 0.08), 200);
-}
-
-function playWarningSound() {
-  playBeep(440, 0.1, 'sine', 0.06);
-}
-
-// ── Toast ──
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(el._timeout);
-  el._timeout = setTimeout(() => el.classList.remove('show'), 2000);
-}
-
-// ── Formatting ──
-function formatTime(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-}
-
-function formatNumber(n) {
-  if (n >= 10000) return (n / 10000).toFixed(n % 10000 === 0 ? 0 : 1) + '万';
-  return n.toLocaleString('zh-CN');
-}
-
-function formatChips(n) {
-  return n.toLocaleString('zh-CN');
-}
-
-// ── Timer ──
-function startTimer() {
-  if (state.isRunning) return;
-  if (state.currentLevelIndex >= state.levels.length) return;
-  state.isRunning = true;
-  saveState();
-  timerInterval = setInterval(tick, 1000);
-  requestWakeLock();
-  updatePlayButton();
-  updateTimerRing();
-}
-
-function pauseTimer() {
-  state.isRunning = false;
-  saveState();
-  clearInterval(timerInterval);
-  timerInterval = null;
-  releaseWakeLock();
-  updatePlayButton();
-  updateTimerRing();
-}
-
-function toggleTimer() {
-  if (state.isRunning) {
-    pauseTimer();
-  } else {
-    // If at the end, reset to first level
-    if (state.currentLevelIndex >= state.levels.length) {
-      state.currentLevelIndex = 0;
-      state.remainingSeconds = state.levels[0].durationMinutes * 60;
-      saveState();
-      renderAll();
-    }
-    startTimer();
-  }
-}
-
-function resetTimer() {
-  pauseTimer();
-  state.currentLevelIndex = 0;
-  state.remainingSeconds = state.levels[0].durationMinutes * 60;
-  saveState();
-  renderAll();
-  showToast('↺ 已重置');
-}
-
-function tick() {
-  if (state.remainingSeconds > 0) {
-    state.remainingSeconds--;
-    // Warning at 30s, 10s
-    if (state.remainingSeconds === 30 || state.remainingSeconds === 10 || state.remainingSeconds <= 5) {
-      playWarningSound();
-    }
-    updateTimerDisplay();
-    updateTimerRing();
-  } else {
-    // Time's up - advance to next level
-    advanceLevel();
-  }
-}
-
-function advanceLevel() {
-  pauseTimer();
-  if (state.currentLevelIndex < state.levels.length - 1) {
-    state.currentLevelIndex++;
-    state.remainingSeconds = state.levels[state.currentLevelIndex].durationMinutes * 60;
-    const lvl = state.levels[state.currentLevelIndex];
-    if (lvl.isBreak) {
-      playBreakStartSound();
-      showToast('☕ 休息时间！');
-    } else {
-      playLevelChangeSound();
-      showToast(`⬆ Level ${state.currentLevelIndex + 1}: ${formatChips(lvl.smallBlind)}/${formatChips(lvl.bigBlind)}`);
-    }
-    saveState();
-    renderAll();
-  } else {
-    // Tournament complete
-    showToast('🏆 锦标赛结束！');
-    state.currentLevelIndex = state.levels.length; // mark as finished
-    saveState();
-    renderAll();
-    updatePlayButton();
-  }
-}
-
-function skipToNextLevel() {
-  if (state.currentLevelIndex >= state.levels.length) return;
-  state.remainingSeconds = 0;
-  advanceLevel();
-}
-
-// ── Render ──
-function updateTimerDisplay() {
-  const display = document.getElementById('timerDisplay');
-  const remaining = Math.max(0, state.remainingSeconds);
-  display.textContent = formatTime(remaining);
-  display.classList.toggle('warning', remaining <= 30 && remaining > 0 && state.isRunning);
-}
-
-function updateTimerRing() {
-  const fill = document.getElementById('timerRingFill');
-  const currentLevel = state.levels[state.currentLevelIndex];
-  if (!currentLevel || state.currentLevelIndex >= state.levels.length) {
-    fill.style.strokeDashoffset = '584.34';
-    return;
-  }
-  const total = currentLevel.durationMinutes * 60;
-  const remaining = Math.max(0, state.remainingSeconds);
-  const progress = total > 0 ? remaining / total : 0;
-  const circumference = 584.34; // 2 * PI * 92
-  fill.style.strokeDashoffset = circumference * (1 - progress);
-
-  // Color classes
-  fill.classList.remove('break', 'paused');
-  if (currentLevel.isBreak) fill.classList.add('break');
-  if (!state.isRunning && remaining > 0) fill.classList.add('paused');
-}
-
-function updatePlayButton() {
-  const icon = document.getElementById('btnPlayIcon');
-  const text = document.getElementById('btnPlayText');
-  const btn = document.getElementById('btnPlay');
-  if (state.currentLevelIndex >= state.levels.length) {
-    icon.textContent = '🏆';
-    text.textContent = '结束';
-    btn.classList.add('paused-state');
-    btn.disabled = true;
-  } else if (state.isRunning) {
-    icon.textContent = '⏸';
-    text.textContent = '暂停';
-    btn.classList.remove('paused-state');
-    btn.disabled = false;
-  } else {
-    icon.textContent = '▶';
-    text.textContent = '开始';
-    btn.classList.add('paused-state');
-    btn.disabled = false;
-  }
-}
-
-function renderLevelBadge() {
-  const badge = document.getElementById('levelBadge');
-  const timerLabel = document.getElementById('timerLabel');
-  if (state.currentLevelIndex >= state.levels.length) {
-    badge.textContent = '🏆 锦标赛结束';
-    badge.classList.add('break');
-    timerLabel.textContent = 'COMPLETE';
-    return;
-  }
-  const lvl = state.levels[state.currentLevelIndex];
-  if (lvl.isBreak) {
-    badge.textContent = `☕ 休息时间 (${state.currentLevelIndex + 1}/${state.levels.length})`;
-    badge.classList.add('break');
-    timerLabel.textContent = 'BREAK TIME';
-  } else {
-    badge.textContent = `Level ${state.currentLevelIndex + 1} / ${state.levels.length}`;
-    badge.classList.remove('break');
-    timerLabel.textContent = 'LEVEL TIME';
-  }
-}
-
-function renderBlindCards() {
-  const currentCard = document.getElementById('currentCard');
-  const nextCard = document.getElementById('nextCard');
-
-  // Current level
-  if (state.currentLevelIndex < state.levels.length) {
-    const lvl = state.levels[state.currentLevelIndex];
-    document.getElementById('currentSB').textContent = formatChips(lvl.smallBlind);
-    document.getElementById('currentBB').textContent = formatChips(lvl.bigBlind);
-    document.getElementById('currentAnte').textContent = formatChips(lvl.ante);
-    currentCard.style.display = '';
-    currentCard.classList.remove('break-card');
-    if (lvl.isBreak) {
-      currentCard.classList.add('break-card');
-      currentCard.querySelector('.card-header').textContent = '休息时间 ☕';
-      document.getElementById('currentSB').textContent = '—';
-      document.getElementById('currentBB').textContent = '—';
-      document.getElementById('currentAnte').textContent = '—';
-    } else {
-      currentCard.querySelector('.card-header').textContent = '当前盲注';
-    }
-  } else {
-    currentCard.style.display = 'none';
-  }
-
-  // Next level
-  const nextIdx = state.currentLevelIndex + 1;
-  if (nextIdx < state.levels.length) {
-    const nlvl = state.levels[nextIdx];
-    document.getElementById('nextSB').textContent = formatChips(nlvl.smallBlind);
-    document.getElementById('nextBB').textContent = formatChips(nlvl.bigBlind);
-    document.getElementById('nextAnte').textContent = formatChips(nlvl.ante);
-    nextCard.style.display = '';
-    nextCard.classList.remove('break-card');
-    if (nlvl.isBreak) {
-      nextCard.classList.add('break-card');
-      nextCard.querySelector('.card-header').textContent = '即将休息 ☕';
-      document.getElementById('nextSB').textContent = '—';
-      document.getElementById('nextBB').textContent = '—';
-      document.getElementById('nextAnte').textContent = '—';
-    } else {
-      nextCard.querySelector('.card-header').textContent = '下一级盲注';
-    }
-  } else {
-    if (state.currentLevelIndex >= state.levels.length) {
-      nextCard.style.display = 'none';
-    } else {
-      // Last level
-      document.getElementById('nextSB').textContent = '—';
-      document.getElementById('nextBB').textContent = '—';
-      document.getElementById('nextAnte').textContent = '—';
-      nextCard.querySelector('.card-header').textContent = '最后一级';
-      nextCard.style.display = '';
-    }
-  }
-}
-
-function renderLevelDots() {
-  const container = document.getElementById('levelDots');
-  container.innerHTML = '';
-  state.levels.forEach((lvl, i) => {
-    const dot = document.createElement('span');
-    dot.className = 'timeline-dot';
-    if (lvl.isBreak) dot.classList.add('break-dot');
-    if (i < state.currentLevelIndex) dot.classList.add('done');
-    if (i === state.currentLevelIndex) dot.classList.add('now');
-    dot.title = lvl.isBreak
-      ? `休息 ${lvl.durationMinutes}min`
-      : `L${i+1}: ${formatChips(lvl.smallBlind)}/${formatChips(lvl.bigBlind)} ${lvl.ante ? '+'+formatChips(lvl.ante) : ''}`;
-    container.appendChild(dot);
-  });
-}
-
-function renderStats() {
-  document.getElementById('playerCount').value = state.playerCount;
-  document.getElementById('totalChips').value = state.totalChips;
-  document.getElementById('buyIn').value = state.buyIn;
-  updateCalculations();
-}
-
-function updateCalculations() {
-  const avg = state.playerCount > 0 ? Math.floor(state.totalChips / state.playerCount) : 0;
-  document.getElementById('avgStack').textContent = formatChips(avg);
-
-  const totalPool = state.playerCount * state.buyIn;
-  document.getElementById('prizeTotal').textContent = '¥' + formatChips(totalPool);
-  renderPrizeList(totalPool);
-}
-
-function renderPrizeList(totalPool) {
-  const container = document.getElementById('prizeList');
-  container.innerHTML = '';
-  state.prizeStructure.forEach(p => {
-    const amount = Math.floor(totalPool * p.percentage / 100);
-    const row = document.createElement('div');
-    row.className = 'prize-item';
-    row.innerHTML = `
-      <span class="prize-place">🥇${p.place}</span>
-      <span class="prize-pct">${p.percentage}%</span>
-      <span class="prize-amount">¥${formatChips(amount)}</span>
-    `;
-    container.appendChild(row);
-  });
-}
-
-function renderAll() {
-  updateTimerDisplay();
-  updateTimerRing();
-  updatePlayButton();
-  renderLevelBadge();
-  renderBlindCards();
-  renderLevelDots();
-  renderStats();
-}
-
-// ── Settings ──
-function openSettings() {
-  document.getElementById('settingsOverlay').classList.add('open');
-  renderLevelEditor();
-  renderPrizeEditor();
-}
-
-function closeSettings() {
-  document.getElementById('settingsOverlay').classList.remove('open');
-}
-
-function renderLevelEditor() {
-  const container = document.getElementById('levelEditorRows');
-  container.innerHTML = '';
-  state.levels.forEach((lvl, i) => {
-    const row = document.createElement('div');
-    row.className = 'level-edit-row';
-    row.innerHTML = `
-      <span class="lvl-num">${i+1}</span>
-      <input type="number" value="${lvl.smallBlind}" data-field="smallBlind" data-index="${i}" min="0" step="50" ${lvl.isBreak ? 'disabled' : ''}>
-      <input type="number" value="${lvl.bigBlind}" data-field="bigBlind" data-index="${i}" min="0" step="50" ${lvl.isBreak ? 'disabled' : ''}>
-      <input type="number" value="${lvl.ante}" data-field="ante" data-index="${i}" min="0" step="50" ${lvl.isBreak ? 'disabled' : ''}>
-      <input type="number" value="${lvl.durationMinutes}" data-field="durationMinutes" data-index="${i}" min="1" max="120">
-      <span class="brk-tgl ${lvl.isBreak ? 'on' : ''}" data-index="${i}" title="切换休息">${lvl.isBreak ? '☕ 休息' : '盲注'}</span>
-      <button class="row-del" data-action="delete" data-index="${i}" title="删除">✕</button>
-    `;
-    container.appendChild(row);
-  });
-
-  // Event delegation
-  container.onchange = (e) => {
-    const idx = parseInt(e.target.dataset.index);
-    const field = e.target.dataset.field;
-    if (isNaN(idx) || !field) return;
-    const val = parseInt(e.target.value) || 0;
-    state.levels[idx][field] = Math.max(0, val);
-    if (field === 'durationMinutes') {
-      state.levels[idx].durationMinutes = Math.max(1, val);
-      if (idx === state.currentLevelIndex && state.remainingSeconds > state.levels[idx].durationMinutes * 60) {
-        state.remainingSeconds = state.levels[idx].durationMinutes * 60;
-      }
-    }
-  };
-
-  container.onclick = (e) => {
-    const idx = parseInt(e.target.dataset.index);
-    if (isNaN(idx)) return;
-    if (e.target.dataset.action === 'delete') {
-      if (state.levels.length <= 1) {
-        showToast('至少保留一个级别');
-        return;
-      }
-      state.levels.splice(idx, 1);
-      if (state.currentLevelIndex >= state.levels.length) {
-        state.currentLevelIndex = state.levels.length - 1;
-        state.remainingSeconds = state.levels[state.currentLevelIndex].durationMinutes * 60;
-      }
-      renderLevelEditor();
-    }
-    if (e.target.classList.contains('brk-tgl')) {
-      state.levels[idx].isBreak = !state.levels[idx].isBreak;
-      if (state.levels[idx].isBreak) {
-        state.levels[idx].smallBlind = 0;
-        state.levels[idx].bigBlind = 0;
-        state.levels[idx].ante = 0;
-      }
-      renderLevelEditor();
-    }
-  };
-}
-
-function renderPrizeEditor() {
-  const container = document.getElementById('prizeEditor');
-  container.innerHTML = '';
-  state.prizeStructure.forEach((p, i) => {
-    const row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:8px;';
-    row.innerHTML = `
-      <span style="min-width:40px;font-weight:600;color:var(--gold);">🥇${p.place}</span>
-      <input type="number" value="${p.percentage}" data-prize-index="${i}" min="0" max="100" step="1"
-        style="width:70px;background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:#fff;font-family:var(--font-mono);padding:6px 8px;text-align:center;outline:none;">
-      <span style="color:var(--text-dim);">%</span>
-      <button class="row-del" data-prize-delete="${i}" style="margin-left:auto;">✕</button>
-    `;
-    container.appendChild(row);
-  });
-
-  container.onchange = (e) => {
-    const idx = parseInt(e.target.dataset.prizeIndex);
-    if (isNaN(idx)) return;
-    state.prizeStructure[idx].percentage = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
-  };
-
-  container.onclick = (e) => {
-    const idx = parseInt(e.target.dataset.prizeDelete);
-    if (isNaN(idx)) return;
-    if (state.prizeStructure.length <= 1) {
-      showToast('至少保留一个名次');
-      return;
-    }
-    state.prizeStructure.splice(idx, 1);
-    // Renumber
-    state.prizeStructure.forEach((p, i) => p.place = i + 1);
-    renderPrizeEditor();
-  };
-}
-
-function saveSettings() {
-  // Re-read level editor inputs
-  document.querySelectorAll('#levelEditorRows input').forEach(inp => {
-    const idx = parseInt(inp.dataset.index);
-    const field = inp.dataset.field;
-    if (isNaN(idx) || !field) return;
-    const val = parseInt(inp.value) || 0;
-    state.levels[idx][field] = field === 'durationMinutes' ? Math.max(1, val) : Math.max(0, val);
-  });
-
-  // Re-read prize editor
-  document.querySelectorAll('#prizeEditor input').forEach(inp => {
-    const idx = parseInt(inp.dataset.prizeIndex);
-    if (isNaN(idx)) return;
-    state.prizeStructure[idx].percentage = Math.max(0, Math.min(100, parseInt(inp.value) || 0));
-  });
-
-  // Reset if current level index out of bounds
-  if (state.currentLevelIndex >= state.levels.length) {
-    state.currentLevelIndex = 0;
-    state.remainingSeconds = state.levels[0].durationMinutes * 60;
-  } else {
-    // Ensure remaining time doesn't exceed new duration
-    const maxTime = state.levels[state.currentLevelIndex].durationMinutes * 60;
-    if (state.remainingSeconds > maxTime) {
-      state.remainingSeconds = maxTime;
-    }
-  }
-
-  state.isRunning = false;
-  clearInterval(timerInterval);
-  timerInterval = null;
-  saveState();
-  renderAll();
-  closeSettings();
-  showToast('✅ 设置已保存');
-}
-
-function applyPreset(name) {
-  const preset = PRESETS[name];
-  if (!preset) return;
-  state.levels = preset.levels.map(l => ({
-    smallBlind: l.sb,
-    bigBlind: l.bb,
-    ante: l.ante,
-    durationMinutes: l.dur,
-    isBreak: l.brk,
-  }));
-  state.prizeStructure = preset.prizes.map(p => ({ ...p }));
-  state.currentLevelIndex = 0;
-  state.remainingSeconds = state.levels[0].durationMinutes * 60;
-  state.isRunning = false;
-  clearInterval(timerInterval);
-  timerInterval = null;
-  renderLevelEditor();
-  renderPrizeEditor();
-  showToast(`📋 已加载预设: ${preset.name}`);
-}
-
-// ── Fullscreen ──
-function toggleFullscreen() {
-  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-    const el = document.documentElement;
-    if (el.requestFullscreen) el.requestFullscreen();
-    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-  } else {
-    if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-  }
-}
-
-// ── Event Listeners ──
-document.getElementById('btnPlay').addEventListener('click', toggleTimer);
-document.getElementById('btnNext').addEventListener('click', skipToNextLevel);
-document.getElementById('btnSound').addEventListener('click', toggleSound);
-document.getElementById('btnReset').addEventListener('click', () => {
-  if (confirm('确定要重置计时器吗？这将回到第一级。')) resetTimer();
-});
-document.getElementById('btnSettings').addEventListener('click', openSettings);
-document.getElementById('btnCloseSettings').addEventListener('click', closeSettings);
-document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
-document.getElementById('btnSaveSettings').addEventListener('click', saveSettings);
-
-document.getElementById('settingsOverlay').addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) closeSettings();
-});
-
-document.getElementById('btnAddLevel').addEventListener('click', () => {
-  const last = state.levels[state.levels.length - 1];
-  state.levels.push({
-    smallBlind: last ? last.bigBlind * 2 : 1000,
-    bigBlind: last ? last.bigBlind * 4 : 2000,
-    ante: last ? last.bigBlind * 2 : 1000,
-    durationMinutes: last ? last.durationMinutes : 15,
-    isBreak: false,
-  });
-  renderLevelEditor();
-});
-
-document.getElementById('btnAddPrize').addEventListener('click', () => {
-  state.prizeStructure.push({
-    place: state.prizeStructure.length + 1,
-    percentage: 5,
-  });
-  renderPrizeEditor();
-});
-
-document.getElementById('btnResetAll').addEventListener('click', () => {
-  if (confirm('确定要重置所有数据吗？这将清除所有自定义设置并恢复到默认值。')) {
-    localStorage.removeItem('poker_blind_timer_state');
-    state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-    state.isRunning = false;
-    clearInterval(timerInterval);
-    timerInterval = null;
-    renderAll();
-    closeSettings();
-    showToast('🔄 已恢复默认设置');
-  }
-});
-
-// Preset buttons
-document.querySelectorAll('[data-preset]').forEach(btn => {
-  btn.addEventListener('click', () => applyPreset(btn.dataset.preset));
-});
-
-// Stats inputs
-document.getElementById('playerCount').addEventListener('change', function() {
-  state.playerCount = Math.max(2, parseInt(this.value) || 2);
-  this.value = state.playerCount;
-  saveState();
-  updateCalculations();
-});
-
-document.getElementById('totalChips').addEventListener('change', function() {
-  state.totalChips = Math.max(0, parseInt(this.value) || 0);
-  this.value = state.totalChips;
-  saveState();
-  updateCalculations();
-});
-
-document.getElementById('buyIn').addEventListener('change', function() {
-  state.buyIn = Math.max(0, parseInt(this.value) || 0);
-  this.value = state.buyIn;
-  saveState();
-  updateCalculations();
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  switch (e.key) {
-    case ' ': e.preventDefault(); toggleTimer(); break;
-    case 'ArrowRight': e.preventDefault(); skipToNextLevel(); break;
-    case 'f': case 'F': if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); toggleFullscreen(); } break;
-    case 'Escape': if (document.getElementById('settingsOverlay').classList.contains('open')) closeSettings(); break;
-  }
-});
-
-// Handle fullscreen changes
-document.addEventListener('fullscreenchange', updateFullscreenIcon);
-document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
-function updateFullscreenIcon() {
-  const btn = document.getElementById('btnFullscreen');
-  btn.textContent = (document.fullscreenElement || document.webkitFullscreenElement) ? '⛶' : '⛶';
-}
-
-// ── Wake Lock ──
-async function requestWakeLock() {
-  if (!('wakeLock' in navigator)) return;
-  try {
-    wakeLock = await navigator.wakeLock.request('screen');
-    wakeLock.addEventListener('release', () => { wakeLock = null; });
-  } catch (e) { /* permission denied or not supported */ }
-}
-
-async function releaseWakeLock() {
-  if (wakeLock) {
-    try { await wakeLock.release(); } catch (e) {}
-    wakeLock = null;
-  }
-}
-
-// Re-acquire wake lock on visibility change
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && state.isRunning) {
-    requestWakeLock();
-  }
-});
-
-// ── Sound Toggle ──
-function toggleSound() {
-  soundEnabled = !soundEnabled;
-  const btn = document.getElementById('btnSound');
-  btn.textContent = soundEnabled ? '🔊' : '🔇';
-  btn.classList.toggle('active', !soundEnabled);
-  if (soundEnabled) {
-    playBeep(880, 0.1, 'sine', 0.05);
-  }
-}
-
-// ── Init ──
-function init() {
-  loadState();
-  renderAll();
-  // Pause timer state on load
-  state.isRunning = false;
-  clearInterval(timerInterval);
-  timerInterval = null;
-  updatePlayButton();
-}
-
-// ── Service Worker Registration ──
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {
-      // Service worker registration failed - app still works offline via cache
-    });
-  });
-}
-
-init();
-</script>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const PRESETS = {
+            standard: {
+                name: '标准锦标赛',
+                levels: [
+                    { sb: 100, bb: 200, ante: 200, dur: 15, brk: false },
+                    { sb: 200, bb: 300, ante: 300, dur: 15, brk: false },
+                    { sb: 200, bb: 400, ante: 400, dur: 15, brk: false },
+                    { sb: 300, bb: 500, ante: 500, dur: 15, brk: false },
+                    { sb: 400, bb: 800, ante: 800, dur: 15, brk: false },
+                    { sb: 500, bb: 1000, ante: 1000, dur: 15, brk: true },
+                    { sb: 600, bb: 1200, ante: 1200, dur: 15, brk: false },
+                    { sb: 800, bb: 1600, ante: 1600, dur: 15, brk: false },
+                    { sb: 1000, bb: 2000, ante: 2000, dur: 15, brk: false },
+                    { sb: 1500, bb: 3000, ante: 3000, dur: 15, brk: false },
+                    { sb: 2000, bb: 4000, ante: 4000, dur: 15, brk: false },
+                    { sb: 3000, bb: 6000, ante: 6000, dur: 15, brk: false },
+                ]
+            },
+            turbo: {
+                name: '快速 Turbo',
+                levels: [
+                    { sb: 100, bb: 200, ante: 200, dur: 8, brk: false },
+                    { sb: 200, bb: 400, ante: 400, dur: 8, brk: false },
+                    { sb: 300, bb: 600, ante: 600, dur: 8, brk: false },
+                    { sb: 500, bb: 1000, ante: 1000, dur: 8, brk: false },
+                    { sb: 800, bb: 1600, ante: 1600, dur: 8, brk: false },
+                    { sb: 1200, bb: 2400, ante: 2400, dur: 8, brk: true },
+                    { sb: 2000, bb: 4000, ante: 4000, dur: 8, brk: false },
+                    { sb: 3000, bb: 6000, ante: 6000, dur: 8, brk: false },
+                    { sb: 5000, bb: 10000, ante: 10000, dur: 8, brk: false },
+                    { sb: 8000, bb: 16000, ante: 16000, dur: 8, brk: false },
+                ]
+            },
+            deep: {
+                name: '深筹 Deep',
+                levels: [
+                    { sb: 50, bb: 100, ante: 100, dur: 20, brk: false },
+                    { sb: 100, bb: 200, ante: 200, dur: 20, brk: false },
+                    { sb: 150, bb: 300, ante: 300, dur: 20, brk: false },
+                    { sb: 200, bb: 400, ante: 400, dur: 20, brk: false },
+                    { sb: 300, bb: 600, ante: 600, dur: 20, brk: false },
+                    { sb: 400, bb: 800, ante: 800, dur: 20, brk: true },
+                    { sb: 500, bb: 1000, ante: 1000, dur: 20, brk: false },
+                    { sb: 600, bb: 1200, ante: 1200, dur: 20, brk: false },
+                    { sb: 800, bb: 1600, ante: 1600, dur: 20, brk: false },
+                    { sb: 1000, bb: 2000, ante: 2000, dur: 20, brk: false },
+                    { sb: 1200, bb: 2400, ante: 2400, dur: 20, brk: false },
+                    { sb: 1500, bb: 3000, ante: 3000, dur: 20, brk: false },
+                    { sb: 2000, bb: 4000, ante: 4000, dur: 20, brk: true },
+                    { sb: 2500, bb: 5000, ante: 5000, dur: 20, brk: false },
+                    { sb: 3000, bb: 6000, ante: 6000, dur: 20, brk: false },
+                    { sb: 4000, bb: 8000, ante: 8000, dur: 20, brk: false },
+                ]
+            },
+            sitngo: {
+                name: 'SNG 9人',
+                levels: [
+                    { sb: 100, bb: 200, ante: 0, dur: 10, brk: false },
+                    { sb: 150, bb: 300, ante: 300, dur: 10, brk: false },
+                    { sb: 200, bb: 400, ante: 400, dur: 10, brk: false },
+                    { sb: 300, bb: 600, ante: 600, dur: 10, brk: false },
+                    { sb: 400, bb: 800, ante: 800, dur: 10, brk: false },
+                    { sb: 600, bb: 1200, ante: 1200, dur: 10, brk: true },
+                    { sb: 800, bb: 1600, ante: 1600, dur: 10, brk: false },
+                    { sb: 1000, bb: 2000, ante: 2000, dur: 10, brk: false },
+                    { sb: 1500, bb: 3000, ante: 3000, dur: 10, brk: false },
+                    { sb: 2000, bb: 4000, ante: 4000, dur: 10, brk: false },
+                    { sb: 3000, bb: 6000, ante: 6000, dur: 10, brk: false },
+                ]
+            }
+        };
+
+        const DEFAULT_STATE = {
+            levels: [
+                { smallBlind: 100, bigBlind: 200, ante: 200, durationMinutes: 15, isBreak: false },
+                { smallBlind: 200, bigBlind: 300, ante: 300, durationMinutes: 15, isBreak: false },
+                { smallBlind: 200, bigBlind: 400, ante: 400, durationMinutes: 15, isBreak: false },
+                { smallBlind: 300, bigBlind: 500, ante: 500, durationMinutes: 15, isBreak: false },
+                { smallBlind: 400, bigBlind: 800, ante: 800, durationMinutes: 15, isBreak: false },
+                { smallBlind: 500, bigBlind: 1000, ante: 1000, durationMinutes: 15, isBreak: true },
+                { smallBlind: 600, bigBlind: 1200, ante: 1200, durationMinutes: 15, isBreak: false },
+                { smallBlind: 800, bigBlind: 1600, ante: 1600, durationMinutes: 15, isBreak: false },
+                { smallBlind: 1000, bigBlind: 2000, ante: 2000, durationMinutes: 15, isBreak: false },
+                { smallBlind: 1500, bigBlind: 3000, ante: 3000, durationMinutes: 15, isBreak: false },
+                { smallBlind: 2000, bigBlind: 4000, ante: 4000, durationMinutes: 15, isBreak: false },
+                { smallBlind: 3000, bigBlind: 6000, ante: 6000, durationMinutes: 15, isBreak: false },
+            ],
+            currentLevelIndex: 0,
+            remainingSeconds: 900,
+            isRunning: false,
+            playerCount: 10,
+            totalChips: 200000
+        };
+
+        let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        let timerInterval = null;
+        let wakeLock = null;
+        let soundEnabled = true;
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('poker_blind_timer_state_v4');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    state = { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...parsed };
+                    if (!state.levels || !Array.isArray(state.levels) || state.levels.length === 0) {
+                        state.levels = JSON.parse(JSON.stringify(DEFAULT_STATE.levels));
+                    }
+                    if (state.currentLevelIndex >= state.levels.length) {
+                        state.currentLevelIndex = 0;
+                        state.remainingSeconds = state.levels[0].durationMinutes * 60;
+                    }
+                    if (typeof state.remainingSeconds !== 'number' || state.remainingSeconds < 0) {
+                        state.remainingSeconds = (state.levels[state.currentLevelIndex]?.durationMinutes ||
+                            15) * 60;
+                    }
+                    state.isRunning = false;
+                }
+            } catch (e) {
+                console.warn('Failed to load state:', e);
+                state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem('poker_blind_timer_state_v4', JSON.stringify(state));
+            } catch (e) {
+                console.warn('Failed to save state:', e);
+                showToast('⚠ SAVE FAILED');
+            }
+        }
+
+        function loadLogoImage() {
+            try {
+                const imgData = localStorage.getItem('poker_logo_image');
+                const img = document.getElementById('sideLeftImg');
+                const placeholder = document.getElementById('sideLeftPlaceholder');
+                if (imgData && img) {
+                    img.src = imgData;
+                    img.style.display = '';
+                    if (placeholder) placeholder.style.display = 'none';
+                } else {
+                    if (img) img.style.display = 'none';
+                    if (placeholder) placeholder.style.display = '';
+                }
+            } catch (e) {}
+        }
+
+        function updateLogoPreview() {
+            const imgData = localStorage.getItem('poker_logo_image');
+            const preview = document.getElementById('imgPreview');
+            const nameEl = document.getElementById('imgName');
+            const clearBtn = document.getElementById('btnClearImg');
+            if (imgData && preview) {
+                preview.src = imgData;
+                preview.style.display = '';
+                if (nameEl) { nameEl.textContent = 'Logo set'; nameEl.style.display = ''; }
+                if (clearBtn) clearBtn.style.display = '';
+            } else {
+                if (preview) preview.style.display = 'none';
+                if (nameEl) nameEl.style.display = 'none';
+                if (clearBtn) clearBtn.style.display = 'none';
+            }
+        }
+
+        let audioCtx = null;
+
+        function getAudioCtx() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioCtx;
+        }
+
+        function playBeep(freq, duration, type = 'square', vol = 0.08) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                gain.gain.setValueAtTime(vol, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function playLevelChangeSound() {
+            playBeep(880, 0.15, 'square', 0.1);
+            setTimeout(() => playBeep(1100, 0.3, 'square', 0.1), 150);
+        }
+
+        function playBreakStartSound() {
+            playBeep(660, 0.2, 'sine', 0.08);
+            setTimeout(() => playBeep(880, 0.4, 'sine', 0.08), 200);
+        }
+
+        function playWarningSound() {
+            playBeep(440, 0.1, 'sine', 0.06);
+        }
+
+        function showToast(msg) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.classList.add('show');
+            clearTimeout(el._timeout);
+            el._timeout = setTimeout(() => el.classList.remove('show'), 2500);
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function formatChips(n) {
+            if (n >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'M';
+            if (n >= 1000) return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + 'k';
+            return n.toLocaleString('en-US');
+        }
+
+        function startTimer() {
+            if (state.isRunning) return;
+            if (state.currentLevelIndex >= state.levels.length) return;
+            state.isRunning = true;
+            saveState();
+            timerInterval = setInterval(tick, 1000);
+            requestWakeLock();
+            updatePlayButton();
+            updateSeekBar();
+        }
+
+        function pauseTimer() {
+            state.isRunning = false;
+            saveState();
+            clearInterval(timerInterval);
+            timerInterval = null;
+            releaseWakeLock();
+            updatePlayButton();
+        }
+
+        function toggleTimer() {
+            if (state.isRunning) { pauseTimer(); } else {
+                if (state.currentLevelIndex >= state.levels.length) {
+                    state.currentLevelIndex = 0;
+                    state.remainingSeconds = state.levels[0].durationMinutes * 60;
+                    saveState();
+                    renderAll();
+                }
+                startTimer();
+            }
+        }
+
+        function tick() {
+            if (state.remainingSeconds > 0) {
+                state.remainingSeconds--;
+                if (state.remainingSeconds <= 5 && state.remainingSeconds > 0) { playWarningSound(); }
+                updateTimerDisplay();
+                updateSeekBar();
+            } else { advanceLevel(); }
+        }
+
+        function advanceLevel() {
+            pauseTimer();
+            if (state.currentLevelIndex < state.levels.length - 1) {
+                state.currentLevelIndex++;
+                state.remainingSeconds = state.levels[state.currentLevelIndex].durationMinutes * 60;
+                const lvl = state.levels[state.currentLevelIndex];
+                if (lvl.isBreak) { playBreakStartSound();
+                    showToast('BREAK TIME'); } else { playLevelChangeSound();
+                    showToast('LEVEL UP'); }
+                saveState();
+                renderAll();
+            } else {
+                showToast('TOURNAMENT ENDED');
+                state.currentLevelIndex = state.levels.length;
+                saveState();
+                renderAll();
+                updatePlayButton();
+            }
+        }
+
+        function skipToNextLevel() {
+            if (state.currentLevelIndex >= state.levels.length) return;
+            state.remainingSeconds = 0;
+            advanceLevel();
+        }
+
+        function goToPrevLevel() {
+            if (state.currentLevelIndex <= 0) return;
+            pauseTimer();
+            state.currentLevelIndex--;
+            state.remainingSeconds = state.levels[state.currentLevelIndex].durationMinutes * 60;
+            saveState();
+            renderAll();
+        }
+
+        function updateTimerDisplay() {
+            const d = document.getElementById('timerDisplay');
+            const r = Math.max(0, state.remainingSeconds);
+            d.textContent = formatTime(r);
+            d.classList.toggle('warning', r <= 5 && r > 0 && state.isRunning);
+        }
+
+        function updateSeekBar() {
+            const lvl = state.levels[state.currentLevelIndex];
+            if (!lvl || state.currentLevelIndex >= state.levels.length) return;
+            const total = lvl.durationMinutes * 60;
+            const remaining = Math.max(0, state.remainingSeconds);
+            const elapsed = total - remaining;
+            const slider = document.getElementById('seekSlider');
+            slider.max = total;
+            slider.value = elapsed;
+            document.getElementById('seekElapsed').textContent = formatTime(elapsed);
+            document.getElementById('seekTotal').textContent = formatTime(total);
+        }
+
+        function updatePlayButton() {
+            const icon = document.getElementById('btnPlayIcon');
+            const text = document.getElementById('btnPlayText');
+            const btn = document.getElementById('btnPlay');
+            if (state.currentLevelIndex >= state.levels.length) {
+                icon.textContent = '🏆';
+                text.textContent = 'END';
+                btn.classList.add('paused-state');
+                btn.disabled = true;
+            } else if (state.isRunning) {
+                icon.textContent = '⏸';
+                text.textContent = 'PAUSE';
+                btn.classList.remove('paused-state');
+                btn.disabled = false;
+            } else {
+                icon.textContent = '▶';
+                text.textContent = 'START';
+                btn.classList.add('paused-state');
+                btn.disabled = false;
+            }
+        }
+
+        function renderLevelBadge() {
+            const badge = document.getElementById('levelBadge');
+            if (state.currentLevelIndex >= state.levels.length) {
+                badge.textContent = 'TOURNAMENT COMPLETE';
+                badge.classList.add('break');
+                return;
+            }
+            const lvl = state.levels[state.currentLevelIndex];
+            if (lvl.isBreak) {
+                badge.textContent = 'BREAK TIME (' + (state.currentLevelIndex + 1) + '/' + state.levels.length +
+                    ')';
+                badge.classList.add('break');
+            } else {
+                badge.textContent = 'LEVEL ' + (state.currentLevelIndex + 1) + ' / ' + state.levels.length;
+                badge.classList.remove('break');
+            }
+        }
+
+        function getNextBlindsText() {
+            const ni = state.currentLevelIndex + 1;
+            if (ni < state.levels.length) {
+                const nlvl = state.levels[ni];
+                if (nlvl.isBreak) {
+                    return 'BREAK';
+                } else {
+                    return formatChips(nlvl.smallBlind) + ' / ' + formatChips(nlvl.bigBlind);
+                }
+            }
+            return 'NONE';
+        }
+
+        function renderBlindCards() {
+            const divEl = document.getElementById('timerDiv');
+            const sbEl = document.getElementById('timerSB');
+            const bbEl = document.getElementById('timerBB');
+            const anteEl = document.getElementById('timerAnte');
+            const nextLevelEl = document.getElementById('timerNextLevel');
+
+            if (state.currentLevelIndex < state.levels.length) {
+                const lvl = state.levels[state.currentLevelIndex];
+                if (lvl.isBreak) {
+                    sbEl.textContent = '';
+                    bbEl.textContent = 'BREAK';
+                    anteEl.textContent = '';
+                    divEl.style.display = 'none';
+                } else {
+                    sbEl.textContent = formatChips(lvl.smallBlind);
+                    bbEl.textContent = formatChips(lvl.bigBlind);
+                    anteEl.textContent = lvl.ante > 0 ? 'ANTE ' + formatChips(lvl.ante) : '';
+                    divEl.style.display = 'inline';
+                }
+            } else {
+                sbEl.textContent = '';
+                bbEl.textContent = 'END';
+                anteEl.textContent = '';
+                divEl.style.display = 'none';
+            }
+
+            const nextText = getNextBlindsText();
+            if (nextLevelEl) {
+                nextLevelEl.textContent = nextText !== 'NONE' ? 'NEXT ' + nextText : '';
+            }
+        }
+
+        function renderLevelDots() {
+            const c = document.getElementById('levelDots');
+            c.innerHTML = '';
+            state.levels.forEach((lvl, i) => {
+                const dot = document.createElement('span');
+                dot.className = 'timeline-dot';
+                if (lvl.isBreak) dot.classList.add('break-dot');
+                if (i < state.currentLevelIndex) dot.classList.add('done');
+                if (i === state.currentLevelIndex) dot.classList.add('now');
+                dot.title = lvl.isBreak ? ('Break ' + lvl.durationMinutes + 'm') : ('L' + (i + 1) + ': ' +
+                    formatChips(lvl.smallBlind) + '/' + formatChips(lvl.bigBlind));
+                c.appendChild(dot);
+            });
+        }
+
+        function updateCalculations() {
+            const avg = state.playerCount > 0 ? Math.floor(state.totalChips / state.playerCount) : 0;
+            const formatted = avg.toLocaleString('en-US');
+            const avgDesktop = document.getElementById('avgStack');
+            const avgMobile = document.getElementById('avgStackMobile');
+            if (avgDesktop) avgDesktop.textContent = formatted;
+            if (avgMobile) avgMobile.textContent = formatted;
+        }
+
+        function syncInputsToState() {
+            const pcDesktop = document.getElementById('playerCount');
+            const tcDesktop = document.getElementById('totalChips');
+            const pcMobile = document.getElementById('playerCountMobile');
+            const tcMobile = document.getElementById('totalChipsMobile');
+            if (pcDesktop) pcDesktop.value = state.playerCount;
+            if (tcDesktop) tcDesktop.value = state.totalChips;
+            if (pcMobile) pcMobile.value = state.playerCount;
+            if (tcMobile) tcMobile.value = state.totalChips;
+        }
+
+        function renderStats() {
+            syncInputsToState();
+            updateCalculations();
+        }
+
+        function renderAll() {
+            updateTimerDisplay();
+            updateSeekBar();
+            updatePlayButton();
+            renderLevelBadge();
+            renderBlindCards();
+            renderLevelDots();
+            renderStats();
+        }
+
+        function openSettings() { document.getElementById('settingsOverlay').classList.add('open');
+            renderLevelEditor();
+            updateLogoPreview(); }
+
+        function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
+
+        function renderLevelEditor() {
+            const container = document.getElementById('levelEditorRows');
+            container.innerHTML = '';
+            state.levels.forEach((lvl, i) => {
+                const row = document.createElement('div');
+                row.className = 'level-edit-row';
+                row.innerHTML = '<span class="lvl-num">' + (i + 1) + '</span>' +
+                    '<input type="number" value="' + lvl.smallBlind +
+                    '" data-field="smallBlind" data-index="' + i + '" min="0" step="100" ' + (lvl.isBreak ?
+                        'disabled' : '') + '>' +
+                    '<input type="number" value="' + lvl.bigBlind + '" data-field="bigBlind" data-index="' + i +
+                    '" min="0" step="100" ' + (lvl.isBreak ? 'disabled' : '') + '>' +
+                    '<input type="number" value="' + lvl.ante + '" data-field="ante" data-index="' + i +
+                    '" min="0" step="100" ' + (lvl.isBreak ? 'disabled' : '') + '>' +
+                    '<input type="number" value="' + lvl.durationMinutes +
+                    '" data-field="durationMinutes" data-index="' + i + '" min="1" max="120">' +
+                    '<span class="brk-tgl ' + (lvl.isBreak ? 'on' : '') + '" data-index="' + i + '">' + (lvl
+                        .isBreak ? 'BREAK' : 'BLIND') + '</span>' +
+                    '<button class="row-del" data-action="delete" data-index="' + i + '">✕</button>';
+                container.appendChild(row);
+            });
+
+            container.onchange = (e) => {
+                const idx = parseInt(e.target.dataset.index),
+                    field = e.target.dataset.field;
+                if (isNaN(idx) || !field) return;
+                const val = parseInt(e.target.value) || 0;
+                state.levels[idx][field] = field === 'durationMinutes' ? Math.max(1, val) : Math.max(0, val);
+                if (field === 'durationMinutes' && idx === state.currentLevelIndex && state.remainingSeconds >
+                    state.levels[idx].durationMinutes * 60) {
+                    state.remainingSeconds = state.levels[idx].durationMinutes * 60;
+                }
+            };
+
+            container.onclick = (e) => {
+                const idx = parseInt(e.target.dataset.index);
+                if (isNaN(idx)) return;
+                if (e.target.dataset.action === 'delete') {
+                    if (state.levels.length <= 1) { showToast('Must keep at least 1 level'); return; }
+                    state.levels.splice(idx, 1);
+                    if (state.currentLevelIndex >= state.levels.length) {
+                        state.currentLevelIndex = state.levels.length - 1;
+                        state.remainingSeconds = state.levels[state.currentLevelIndex].durationMinutes * 60;
+                    }
+                    renderLevelEditor();
+                }
+                if (e.target.classList.contains('brk-tgl')) {
+                    state.levels[idx].isBreak = !state.levels[idx].isBreak;
+                    if (state.levels[idx].isBreak) { state.levels[idx].smallBlind = 0;
+                        state.levels[idx].bigBlind = 0;
+                        state.levels[idx].ante = 0; }
+                    renderLevelEditor();
+                }
+            };
+        }
+
+        function saveSettings() {
+            document.querySelectorAll('#levelEditorRows input').forEach(inp => {
+                const idx = parseInt(inp.dataset.index),
+                    field = inp.dataset.field;
+                if (isNaN(idx) || !field) return;
+                const val = parseInt(inp.value) || 0;
+                state.levels[idx][field] = field === 'durationMinutes' ? Math.max(1, val) : Math.max(0, val);
+            });
+            if (state.currentLevelIndex >= state.levels.length) {
+                state.currentLevelIndex = 0;
+                state.remainingSeconds = state.levels[0].durationMinutes * 60;
+            } else {
+                const maxTime = state.levels[state.currentLevelIndex].durationMinutes * 60;
+                if (state.remainingSeconds > maxTime) state.remainingSeconds = maxTime;
+            }
+            state.isRunning = false;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            saveState();
+            renderAll();
+            closeSettings();
+            showToast('SETTINGS SAVED');
+        }
+
+        function applyPreset(name) {
+            const preset = PRESETS[name];
+            if (!preset) return;
+            state.levels = preset.levels.map(l => ({ smallBlind: l.sb, bigBlind: l.bb, ante: l.ante,
+                durationMinutes: l.dur, isBreak: l.brk }));
+            state.currentLevelIndex = 0;
+            state.remainingSeconds = state.levels[0].durationMinutes * 60;
+            state.isRunning = false;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            renderLevelEditor();
+            showToast('LOADED: ' + preset.name);
+        }
+
+        function handlePlayerCountChange(val) {
+            state.playerCount = Math.max(2, parseInt(val) || 2);
+            saveState();
+            syncInputsToState();
+            updateCalculations();
+        }
+
+        function handleTotalChipsChange(val) {
+            state.totalChips = Math.max(0, parseInt(val) || 0);
+            saveState();
+            syncInputsToState();
+            updateCalculations();
+        }
+
+        function setupLayoutResponsiveness() {
+            const sideLeftDesktop = document.getElementById('sideLeftDesktop');
+            const sideRightDesktop = document.getElementById('sideRightDesktop');
+            const sideRowMobile = document.getElementById('sideRowMobile');
+            const mainEl = document.querySelector('.main');
+
+            function applyLayout() {
+                const width = window.innerWidth;
+                if (width <= 900) {
+                    if (sideLeftDesktop) sideLeftDesktop.style.display = 'none';
+                    if (sideRightDesktop) sideRightDesktop.style.display = 'none';
+                    if (sideRowMobile) sideRowMobile.style.display = 'flex';
+                    if (mainEl) {
+                        mainEl.style.gridTemplateColumns = '1fr';
+                        mainEl.style.gridTemplateAreas = '"center" "side-row"';
+                    }
+                } else {
+                    if (sideLeftDesktop) sideLeftDesktop.style.display = 'flex';
+                    if (sideRightDesktop) sideRightDesktop.style.display = 'flex';
+                    if (sideRowMobile) sideRowMobile.style.display = 'none';
+                    if (mainEl) {
+                        mainEl.style.gridTemplateColumns = 'var(--side-col-width) 1fr var(--side-col-width)';
+                        mainEl.style.gridTemplateAreas = '"left center right"';
+                    }
+                }
+            }
+
+            applyLayout();
+            window.addEventListener('resize', applyLayout);
+            return applyLayout;
+        }
+
+        const layoutApply = setupLayoutResponsiveness();
+
+        document.getElementById('btnPlay').addEventListener('click', toggleTimer);
+        document.getElementById('btnNext').addEventListener('click', skipToNextLevel);
+        document.getElementById('btnPrev').addEventListener('click', goToPrevLevel);
+        document.getElementById('btnSound').addEventListener('click', toggleSound);
+        document.getElementById('btnSettings').addEventListener('click', openSettings);
+        document.getElementById('btnCloseSettings').addEventListener('click', closeSettings);
+        document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+        document.getElementById('btnSaveSettings').addEventListener('click', saveSettings);
+        document.getElementById('settingsOverlay').addEventListener('click', (e) => { if (e.target === e
+                .currentTarget) closeSettings(); });
+
+        document.getElementById('btnAddLevel').addEventListener('click', () => {
+            const last = state.levels[state.levels.length - 1];
+            state.levels.push({
+                smallBlind: last ? last.bigBlind * 2 : 1000,
+                bigBlind: last ? last.bigBlind * 4 : 2000,
+                ante: last ? last.bigBlind * 2 : 1000,
+                durationMinutes: last ? last.durationMinutes : 15,
+                isBreak: false
+            });
+            renderLevelEditor();
+        });
+
+        document.getElementById('btnResetAll').addEventListener('click', () => {
+            if (confirm('Reset to defaults?')) {
+                localStorage.removeItem('poker_blind_timer_state_v4');
+                state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+                state.isRunning = false;
+                clearInterval(timerInterval);
+                timerInterval = null;
+                renderAll();
+                closeSettings();
+                showToast('RESET COMPLETE');
+            }
+        });
+
+        document.querySelectorAll('[data-preset]').forEach(btn => { btn.addEventListener('click', () => applyPreset(btn
+                .dataset.preset)); });
+
+        // Image upload
+        const imgFileInput = document.getElementById('imgFileInput');
+        const btnUploadImg = document.getElementById('btnUploadImg');
+        const btnClearImg = document.getElementById('btnClearImg');
+        if (btnUploadImg && imgFileInput) {
+            btnUploadImg.addEventListener('click', () => imgFileInput.click());
+            imgFileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem('poker_logo_image', e.target.result);
+                    loadLogoImage();
+                    updateLogoPreview();
+                    showToast('LOGO UPDATED');
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        if (btnClearImg) {
+            btnClearImg.addEventListener('click', () => {
+                localStorage.removeItem('poker_logo_image');
+                loadLogoImage();
+                updateLogoPreview();
+                if (imgFileInput) imgFileInput.value = '';
+                showToast('LOGO REMOVED');
+            });
+        }
+
+        const playerCountDesktop = document.getElementById('playerCount');
+        const totalChipsDesktop = document.getElementById('totalChips');
+        const playerCountMobile = document.getElementById('playerCountMobile');
+        const totalChipsMobile = document.getElementById('totalChipsMobile');
+
+        if (playerCountDesktop) {
+            playerCountDesktop.addEventListener('change', function() { handlePlayerCountChange(this.value); });
+            playerCountDesktop.addEventListener('input', function() { handlePlayerCountChange(this.value); });
+        }
+        if (totalChipsDesktop) {
+            totalChipsDesktop.addEventListener('change', function() { handleTotalChipsChange(this.value); });
+            totalChipsDesktop.addEventListener('input', function() { handleTotalChipsChange(this.value); });
+        }
+        if (playerCountMobile) {
+            playerCountMobile.addEventListener('change', function() { handlePlayerCountChange(this.value); });
+            playerCountMobile.addEventListener('input', function() { handlePlayerCountChange(this.value); });
+        }
+        if (totalChipsMobile) {
+            totalChipsMobile.addEventListener('change', function() { handleTotalChipsChange(this.value); });
+            totalChipsMobile.addEventListener('input', function() { handleTotalChipsChange(this.value); });
+        }
+
+        document.getElementById('seekSlider').addEventListener('input', function() {
+            const lvl = state.levels[state.currentLevelIndex];
+            if (!lvl || state.currentLevelIndex >= state.levels.length) return;
+            const total = lvl.durationMinutes * 60;
+            const elapsed = parseInt(this.value) || 0;
+            state.remainingSeconds = Math.max(0, total - elapsed);
+            updateTimerDisplay();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            switch (e.key) {
+                case ' ':
+                    e.preventDefault();
+                    toggleTimer();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    skipToNextLevel();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    goToPrevLevel();
+                    break;
+                case 'f':
+                case 'F':
+                    if (!e.ctrlKey && !e.metaKey) { e.preventDefault();
+                        toggleFullscreen(); }
+                    break;
+                case 'Escape':
+                    if (document.getElementById('settingsOverlay').classList.contains('open')) closeSettings();
+                    break;
+            }
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                const el = document.documentElement;
+                if (el.requestFullscreen) el.requestFullscreen();
+                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            }
+        }
+
+        async function requestWakeLock() {
+            if (!('wakeLock' in navigator)) return;
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLock.addEventListener('release', () => { wakeLock = null; });
+            } catch (e) {}
+        }
+
+        async function releaseWakeLock() {
+            if (wakeLock) { try { await wakeLock.release(); } catch (e) {} wakeLock = null; }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && state.isRunning) { requestWakeLock(); }
+        });
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('btnSound');
+            btn.textContent = soundEnabled ? '🔊' : '🔇';
+            btn.style.opacity = soundEnabled ? '1' : '0.5';
+            if (soundEnabled) playBeep(880, 0.1, 'sine', 0.05);
+        }
+
+        function init() {
+            loadState();
+            loadLogoImage();
+            layoutApply();
+            syncInputsToState();
+            renderAll();
+            state.isRunning = false;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            updatePlayButton();
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+        }
+
+        init();
+    </script>
 </body>
 </html>
