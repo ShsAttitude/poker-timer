@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#060d06">
+    <meta name="theme-color" content="#0a0505">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Blind Timer">
@@ -12,17 +12,17 @@
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
-            --felt-deep: #050a05;
-            --felt: #081208;
-            --felt-light: #0a180a;
+            --felt-deep: #0a0505;
+            --felt: #110808;
+            --felt-light: #180a0a;
             --gold: #d4af37;
             --gold-light: #f3e5ab;
             --gold-pale: #f9f6e6;
             --gold-dark: #aa8529;
             --gold-dim: #6b531c;
-            --emerald: #15582f;
-            --emerald-bright: #228b45;
-            --card-bg: rgba(12, 20, 12, 0.55);
+            --crimson: #5a1515;
+            --crimson-bright: #8b2222;
+            --card-bg: rgba(20, 12, 12, 0.75);
             --glass-border: rgba(212, 175, 55, 0.15);
             --cream: #f4ecd8;
             --cream-dim: #c5bca8;
@@ -32,9 +32,9 @@
             --radius-lg: 20px;
             --radius-xl: 30px;
             --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            --font-mono: 'Cascadia Code', 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            --font-mono: 'Segoe UI', system-ui, -apple-system, sans-serif;
             --font-display: Georgia, 'Times New Roman', serif;
-            --side-col-width: 290px;
+            --side-col-width: 320px;
         }
 
         *,
@@ -52,7 +52,7 @@
             font-family: var(--font);
             background-color: var(--felt-deep);
             background-image:
-                radial-gradient(ellipse at 50% 20%, rgba(34, 139, 69, 0.15) 0%, transparent 70%),
+                radial-gradient(ellipse at 50% 20%, rgba(139, 34, 34, 0.15) 0%, transparent 70%),
                 radial-gradient(ellipse at 50% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
             color: var(--cream);
             min-height: 100%;
@@ -69,7 +69,7 @@
             justify-content: space-between;
             padding: 8px 24px;
             border-bottom: 1px solid rgba(212, 175, 55, 0.08);
-            background: linear-gradient(180deg, rgba(5, 10, 5, 0.9) 0%, rgba(5, 10, 5, 0) 100%);
+            background: linear-gradient(180deg, rgba(10, 5, 5, 0.9) 0%, rgba(10, 5, 5, 0) 100%);
             position: relative;
             z-index: 100;
             flex-shrink: 0;
@@ -93,7 +93,7 @@
         }
         .header-title {
             font-family: var(--font-display);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
             letter-spacing: 0.1em;
             color: var(--gold);
@@ -224,17 +224,18 @@
             box-shadow: 0 0 35px rgba(212, 175, 55, 0.12), 0 10px 40px rgba(0, 0, 0, 0.5);
         }
         .side-card .stat-label {
-            font-size: 1rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
             letter-spacing: 0.15em;
-            color: var(--cream-muted);
-            font-weight: 600;
+            color: var(--cream-dim);
+            font-weight: 700;
             white-space: nowrap;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
         }
         .side-card .stat-value {
             font-family: var(--font-mono);
-            font-size: 2.6rem;
-            font-weight: 300;
+            font-size: 3rem;
+            font-weight: 700;
             color: #fff;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             text-align: center;
@@ -242,11 +243,11 @@
         }
         .side-card .stat-value.gold {
             color: var(--gold-light);
-            font-size: 2.8rem;
-            font-weight: 400;
+            font-size: 3rem;
+            font-weight: 700;
         }
         .side-card .stat-value.next-blinds {
-            font-size: 2.6rem;
+            font-size: 2.8rem;
             line-height: 1.2;
             letter-spacing: 0.03em;
         }
@@ -256,8 +257,8 @@
             border-bottom: 2px solid rgba(212, 175, 55, 0.3);
             color: #fff;
             font-family: var(--font-mono);
-            font-size: 2.4rem;
-            font-weight: 300;
+            font-size: 2.8rem;
+            font-weight: 700;
             text-align: center;
             width: 100%;
             outline: none;
@@ -279,9 +280,9 @@
         .level-chip {
             display: inline-flex;
             align-items: center;
-            padding: 8px 30px;
+            padding: 6px 24px;
             border-radius: 30px;
-            font-size: 1.35rem;
+            font-size: 1.1rem;
             font-weight: 600;
             letter-spacing: 0.2em;
             text-transform: uppercase;
@@ -305,8 +306,8 @@
         }
         .timer-time {
             font-family: var(--font-mono);
-            font-size: clamp(7rem, 18vw, 14rem);
-            font-weight: 200;
+            font-size: clamp(6rem, 16vw, 12rem);
+            font-weight: 700;
             letter-spacing: 0.02em;
             color: #ffffff;
             line-height: 0.85;
@@ -337,31 +338,31 @@
         }
         .tcur-sb,
         .tcur-bb {
-            font-size: clamp(2.5rem, 6.5vw, 5.5rem);
-            font-weight: 300;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 700;
             color: var(--gold);
             text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
         .tcur-div {
             font-size: clamp(2rem, 5vw, 4.5rem);
             color: rgba(255, 255, 255, 0.15);
-            font-weight: 200;
+            font-weight: 400;
         }
         .timer-cur-ante {
-            font-size: clamp(1.5rem, 3vw, 2.4rem);
-            color: var(--gold-dim);
-            font-weight: 500;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--cream-dim);
+            font-weight: 600;
             letter-spacing: 0.1em;
             margin-top: 4px;
             text-transform: uppercase;
         }
         .timer-next-level {
-            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            font-size: clamp(2rem, 5vw, 3rem);
             color: var(--gold-light);
-            font-weight: 400;
+            font-weight: 600;
             letter-spacing: 0.06em;
-            margin-top: 2px;
-            opacity: 0.85;
+            margin-top: 4px;
+            opacity: 1;
         }
 
         .interaction-area {
@@ -410,16 +411,16 @@
             color: #fff;
         }
         .btn-play {
-            background: linear-gradient(135deg, #186835, #228b45);
-            border-color: #2eb85c;
+            background: linear-gradient(135deg, #8b2222, #aa3333);
+            border-color: #cc4444;
             color: #fff;
             font-size: 1.15rem;
             flex: 1.5;
-            box-shadow: 0 8px 30px rgba(34, 139, 69, 0.4);
+            box-shadow: 0 8px 30px rgba(139, 34, 34, 0.4);
         }
         .btn-play:hover {
-            background: linear-gradient(135deg, #1c7c3f, #28a754);
-            box-shadow: 0 8px 40px rgba(34, 139, 69, 0.6);
+            background: linear-gradient(135deg, #9b2828, #bb3a3a);
+            box-shadow: 0 8px 40px rgba(139, 34, 34, 0.6);
         }
         .btn-play.paused-state {
             background: rgba(25, 35, 25, 0.6);
@@ -491,9 +492,9 @@
             flex-shrink: 0;
         }
         .timeline-dot.done {
-            background: var(--emerald);
-            border-color: var(--emerald-bright);
-            box-shadow: 0 0 10px rgba(34, 139, 69, 0.5);
+            background: var(--crimson);
+            border-color: var(--crimson-bright);
+            box-shadow: 0 0 10px rgba(139, 34, 34, 0.5);
         }
         .timeline-dot.now {
             background: var(--gold);
@@ -631,7 +632,7 @@
 
         .level-edit-row {
             display: grid;
-            grid-template-columns: 40px 1fr 1fr 1fr 1fr 60px 40px;
+            grid-template-columns: 32px 70px 70px 70px 55px 60px 32px;
             gap: 8px;
             align-items: center;
             margin-bottom: 8px;
@@ -654,8 +655,9 @@
             color: #fff;
             font-family: var(--font-mono);
             font-size: 0.9rem;
-            padding: 8px;
+            padding: 6px 4px;
             text-align: center;
+            min-width: 0;
         }
         .level-edit-row input:focus {
             border-color: var(--gold);
@@ -933,13 +935,14 @@
                 gap: 4px;
             }
             .level-edit-row {
-                grid-template-columns: 28px 1fr 1fr 1fr 1fr 44px 28px;
+                grid-template-columns: 24px 52px 52px 52px 44px 50px 24px;
                 gap: 4px;
                 font-size: 0.7rem;
             }
             .level-edit-row input {
                 font-size: 0.7rem;
                 padding: 6px 4px;
+                min-width: 0;
             }
         }
     </style>
@@ -962,7 +965,7 @@
 
         <div class="side-left" id="sideLeftDesktop">
             <img class="side-left-img" id="sideLeftImg" src="" alt="" style="display:none;">
-            <div class="side-left-placeholder" id="sideLeftPlaceholder">UPLOAD LOGO<br>IN SETTINGS</div>
+            <div class="side-left-placeholder" id="sideLeftPlaceholder">在设置中<br>上传标志</div>
         </div>
 
         <div class="center-col">
@@ -1033,39 +1036,41 @@
         <div class="settings-panel">
             <div class="settings-handle"></div>
             <div class="settings-head">
-                <h2>TOURNAMENT SETTINGS</h2>
+                <h2>赛事设置</h2>
                 <button class="icon-btn" id="btnCloseSettings" style="border:none; background:transparent;">✕</button>
             </div>
             <div class="settings-block">
-                <h3>PRESETS</h3>
+                <h3>预设方案</h3>
                 <div class="settings-actions" style="margin-top:0">
-                    <button class="btn-preset" data-preset="standard">Standard</button>
-                    <button class="btn-preset" data-preset="turbo">Turbo</button>
-                    <button class="btn-preset" data-preset="deep">Deep Stack</button>
-                    <button class="btn-preset" data-preset="sitngo">SNG 9-Max</button>
+                    <button class="btn-preset" data-preset="standard">标准</button>
+                    <button class="btn-preset" data-preset="turbo">快速</button>
+                    <button class="btn-preset" data-preset="deep">深筹</button>
+                    <button class="btn-preset" data-preset="sitngo">SNG 9人</button>
+                    <button class="btn-preset" id="btnSaveAsPreset" style="border-style:dashed;">+ 新建规则</button>
                 </div>
+                <div id="customPresets" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
             </div>
             <div class="settings-block">
-                <h3>LOGO IMAGE</h3>
-                <div class="img-upload-row">
-                    <img class="img-upload-preview" id="imgPreview" src="" alt="" style="display:none;">
-                    <span class="img-upload-name" id="imgName" style="display:none;"></span>
-                    <button class="img-upload-btn" id="btnUploadImg">UPLOAD IMAGE</button>
-                    <input type="file" id="imgFileInput" accept="image/*" style="display:none;">
-                    <button class="img-clear-btn" id="btnClearImg" style="display:none;">REMOVE</button>
-                </div>
-            </div>
-            <div class="settings-block">
-                <h3>BLIND STRUCTURE</h3>
+                <h3>盲注结构</h3>
                 <div class="level-edit-row head">
-                    <span></span><span>SB</span><span>BB</span><span>ANTE</span><span>MIN</span><span>TYPE</span><span></span>
+                    <span></span><span>SB</span><span>BB</span><span>ANTE</span><span>分钟</span><span>类型</span><span></span>
                 </div>
                 <div id="levelEditorRows"></div>
                 <button class="btn-preset" id="btnAddLevel" style="margin-top:15px; width:100%; border-style:dashed;">+ ADD LEVEL</button>
             </div>
+            <div class="settings-block">
+                <h3>标志图片</h3>
+                <div class="img-upload-row">
+                    <img class="img-upload-preview" id="imgPreview" src="" alt="" style="display:none;">
+                    <span class="img-upload-name" id="imgName" style="display:none;"></span>
+                    <button class="img-upload-btn" id="btnUploadImg">上传图片</button>
+                    <input type="file" id="imgFileInput" accept="image/*" style="display:none;">
+                    <button class="img-clear-btn" id="btnClearImg" style="display:none;">移除</button>
+                </div>
+            </div>
             <div class="settings-actions">
-                <button class="btn-save" id="btnSaveSettings">SAVE & APPLY</button>
-                <button class="btn-ghost-sm" id="btnResetAll">RESET</button>
+                <button class="btn-save" id="btnSaveSettings">保存并应用</button>
+                <button class="btn-ghost-sm" id="btnResetAll">重置</button>
             </div>
         </div>
     </div>
@@ -1240,6 +1245,7 @@
         }
 
         let audioCtx = null;
+        let klaxonFiredForLevel = false;
 
         function getAudioCtx() {
             if (!audioCtx) {
@@ -1279,6 +1285,30 @@
             playBeep(440, 0.1, 'sine', 0.06);
         }
 
+        function playKlaxon() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioCtx();
+                const now = ctx.currentTime;
+                // Dual-tone klaxon — like a sci-fi base alarm
+                const tones = [800, 600];
+                tones.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                    osc.frequency.linearRampToValueAtTime(freq * 0.8, now + i * 0.08 + 0.2);
+                    osc.frequency.linearRampToValueAtTime(freq, now + i * 0.08 + 0.35);
+                    gain.gain.setValueAtTime(0.07, now + i * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + i * 0.08);
+                    osc.stop(now + i * 0.08 + 0.45);
+                });
+            } catch (e) {}
+        }
+
         function showToast(msg) {
             const el = document.getElementById('toast');
             el.textContent = msg;
@@ -1303,6 +1333,7 @@
             if (state.isRunning) return;
             if (state.currentLevelIndex >= state.levels.length) return;
             state.isRunning = true;
+            klaxonFiredForLevel = false;
             saveState();
             timerInterval = setInterval(tick, 1000);
             requestWakeLock();
@@ -1344,6 +1375,7 @@
             pauseTimer();
             if (state.currentLevelIndex < state.levels.length - 1) {
                 state.currentLevelIndex++;
+                klaxonFiredForLevel = false;
                 state.remainingSeconds = state.levels[state.currentLevelIndex].durationMinutes * 60;
                 const lvl = state.levels[state.currentLevelIndex];
                 if (lvl.isBreak) { playBreakStartSound();
@@ -1554,7 +1586,7 @@
                     '<input type="number" value="' + lvl.durationMinutes +
                     '" data-field="durationMinutes" data-index="' + i + '" min="1" max="120">' +
                     '<span class="brk-tgl ' + (lvl.isBreak ? 'on' : '') + '" data-index="' + i + '">' + (lvl
-                        .isBreak ? 'BREAK' : 'BLIND') + '</span>' +
+                        .isBreak ? 'BREAK' : '盲注') + '</span>' +
                     '<button class="row-del" data-action="delete" data-index="' + i + '">✕</button>';
                 container.appendChild(row);
             });
@@ -1614,7 +1646,7 @@
             saveState();
             renderAll();
             closeSettings();
-            showToast('SETTINGS SAVED');
+            showToast('设置已保存');
         }
 
         function applyPreset(name) {
@@ -1630,6 +1662,84 @@
             renderLevelEditor();
             showToast('LOADED: ' + preset.name);
         }
+
+        // --- Custom presets ---
+        const CUSTOM_PRESETS_KEY = 'poker_custom_presets';
+
+        function loadCustomPresets() {
+            try {
+                const raw = localStorage.getItem(CUSTOM_PRESETS_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) { return {}; }
+        }
+
+        function saveCustomPresets(presets) {
+            try {
+                localStorage.setItem(CUSTOM_PRESETS_KEY, JSON.stringify(presets));
+            } catch (e) { showToast('⚠ SAVE FAILED'); }
+        }
+
+        function renderCustomPresets() {
+            const container = document.getElementById('customPresets');
+            if (!container) return;
+            container.innerHTML = '';
+            const presets = loadCustomPresets();
+            Object.keys(presets).forEach(name => {
+                const wrapper = document.createElement('span');
+                wrapper.style.cssText = 'display:inline-flex;align-items:center;gap:2px;';
+                const btn = document.createElement('button');
+                btn.className = 'btn-preset';
+                btn.textContent = name;
+                btn.addEventListener('click', () => {
+                    state.levels = presets[name].map(l => ({
+                        smallBlind: l.sb, bigBlind: l.bb, ante: l.ante,
+                        durationMinutes: l.dur, isBreak: l.brk
+                    }));
+                    state.currentLevelIndex = 0;
+                    state.remainingSeconds = state.levels[0].durationMinutes * 60;
+                    state.isRunning = false;
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    renderLevelEditor();
+                    showToast('LOADED: ' + name);
+                });
+                const delBtn = document.createElement('button');
+                delBtn.textContent = '×';
+                delBtn.style.cssText = 'background:transparent;border:none;color:#ff5555;cursor:pointer;font-size:1.1rem;padding:0 4px;line-height:1;';
+                delBtn.title = 'Delete ' + name;
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('Delete preset "' + name + '"?')) {
+                        delete presets[name];
+                        saveCustomPresets(presets);
+                        renderCustomPresets();
+                        showToast('DELETED: ' + name);
+                    }
+                });
+                wrapper.appendChild(btn);
+                wrapper.appendChild(delBtn);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function saveCurrentAsPreset() {
+            const name = prompt('请输入新规则名称：');
+            if (!name || !name.trim()) return;
+            const trimmedName = name.trim();
+            const presets = loadCustomPresets();
+            if (presets[trimmedName] && !confirm('规则 "' + trimmedName + '" 已存在，是否覆盖？')) return;
+            presets[trimmedName] = state.levels.map(l => ({
+                sb: l.smallBlind, bb: l.bigBlind, ante: l.ante, dur: l.durationMinutes, brk: l.isBreak
+            }));
+            saveCustomPresets(presets);
+            renderCustomPresets();
+            showToast('SAVED: ' + trimmedName);
+        }
+
+        // Wire up custom preset UI
+        document.getElementById('btnSaveAsPreset').addEventListener('click', saveCurrentAsPreset);
+        // Load custom presets on init
+        renderCustomPresets();
 
         function handlePlayerCountChange(val) {
             state.playerCount = Math.max(2, parseInt(val) || 2);
