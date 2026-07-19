@@ -1012,7 +1012,7 @@
             </div>
             <div class="side-card" id="playersCard">
                 <span class="stat-label">PLAYERS</span>
-                <input type="number" class="stat-input" id="playerCount" min="2" max="9999" value="10">
+                <input type="number" class="stat-input" id="playerCount" min="1" max="9999" value="10">
             </div>
         </div>
 
@@ -1027,7 +1027,7 @@
             </div>
             <div class="side-card" id="playersCardMobile">
                 <span class="stat-label">PLAYERS</span>
-                <input type="number" class="stat-input" id="playerCountMobile" min="2" max="9999" value="10">
+                <input type="number" class="stat-input" id="playerCountMobile" min="1" max="9999" value="10">
             </div>
         </div>
     </main>
@@ -1759,7 +1759,7 @@
                 updateCalculations();
                 return;
             }
-            state.playerCount = Math.max(2, num);
+            state.playerCount = Math.max(1, num);
             saveState();
             updateCalculations();
         }
