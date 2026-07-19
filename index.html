@@ -1377,6 +1377,7 @@
                     showToast('LEVEL UP'); }
                 saveState();
                 renderAll();
+                startTimer();
             } else {
                 showToast('TOURNAMENT ENDED');
                 state.currentLevelIndex = state.levels.length;
@@ -1753,16 +1754,24 @@
         renderAllPresets();
 
         function handlePlayerCountChange(val) {
-            state.playerCount = Math.max(2, parseInt(val) || 2);
+            const num = parseInt(val);
+            if (val === '' || isNaN(num)) {
+                updateCalculations();
+                return;
+            }
+            state.playerCount = Math.max(2, num);
             saveState();
-            syncInputsToState();
             updateCalculations();
         }
 
         function handleTotalChipsChange(val) {
-            state.totalChips = Math.max(0, parseInt(val) || 0);
+            const num = parseInt(val);
+            if (val === '' || isNaN(num)) {
+                updateCalculations();
+                return;
+            }
+            state.totalChips = Math.max(0, num);
             saveState();
-            syncInputsToState();
             updateCalculations();
         }
 
