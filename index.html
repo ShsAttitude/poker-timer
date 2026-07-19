@@ -1655,6 +1655,16 @@
             state.isRunning = false;
             clearInterval(timerInterval);
             timerInterval = null;
+            // Apply preset's poster/logo
+            if (preset.logo) {
+                localStorage.setItem('poker_logo_image', preset.logo);
+            } else {
+                localStorage.removeItem('poker_logo_image');
+            }
+            loadLogoImage();
+            updateLogoPreview();
+            saveState();
+            renderAll();
             renderLevelEditor();
             showToast('LOADED: ' + name);
         }
@@ -1665,9 +1675,17 @@
         function loadAllPresets() {
             try {
                 const raw = localStorage.getItem(ALL_PRESETS_KEY);
-                if (raw) return JSON.parse(raw);
-            } catch (e) {}
-            // First time: seed from built-in PRESETS
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    // Defensive: ensure it's a valid non-empty object
+                    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed) && Object.keys(parsed).length > 0) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to parse presets, re-seeding from built-in');
+            }
+            // First time or corrupted: seed from built-in PRESETS
             const seeded = {};
             Object.keys(PRESETS).forEach(k => {
                 seeded[PRESETS[k].name] = PRESETS[k];
@@ -1742,7 +1760,8 @@
                 name: trimmedName,
                 levels: state.levels.map(l => ({
                     sb: l.smallBlind, bb: l.bigBlind, ante: l.ante, dur: l.durationMinutes, brk: l.isBreak
-                }))
+                })),
+                logo: localStorage.getItem('poker_logo_image') || null
             };
             saveAllPresets(presets);
             renderAllPresets();
